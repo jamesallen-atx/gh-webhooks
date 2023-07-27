@@ -1,7 +1,7 @@
 import asyncio
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Any, Awaitable, Dict, List, Type, Union
+from typing import Any, Awaitable, Dict, List, Union
 
 from typing_extensions import Protocol, runtime_checkable
 
@@ -23,11 +23,11 @@ class GhWebhookEventHandler:
     An engine for handling GitHub webhook events.
     """
 
-    _ons: Dict[Union[Model,GhWebhooksModel], List[_EventHandler]] = field(
+    _ons: Dict[Union[Model, GhWebhooksModel], List[_EventHandler]] = field(
         default_factory=lambda: defaultdict(list)
     )
 
-    def on(self, event_type: Union[Model,GhWebhooksModel]):
+    def on(self, event_type: Union[Model, GhWebhooksModel]):
         """
         Register a function to handle events of a given type
         """
@@ -50,4 +50,4 @@ class GhWebhookEventHandler:
             If the event can't be matched to a model
         """
         resolved = resolve_event(event, kind)
-        return await asyncio.gather(*[fn(resolved) for fn in self._ons[type(resolved)]])
+        return await asyncio.gather(*[fn(resolved) for fn in self._ons[type(resolved)]])  # type: ignore
