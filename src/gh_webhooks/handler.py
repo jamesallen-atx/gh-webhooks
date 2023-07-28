@@ -1,7 +1,7 @@
 import asyncio
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Any, Awaitable, Dict, List, Union
+from typing import Any, Awaitable, Dict, List, Union, Optional
 
 from typing_extensions import Protocol, runtime_checkable
 
@@ -37,7 +37,7 @@ class GhWebhookEventHandler:
 
         return register_event_handler
 
-    async def handle_event(self, event: Dict[str, Any], kind: str):
+    async def handle_event(self, event: Dict[str, Any], kind: Optional[str]):
         """
         Handle a GitHub webhook event JSON, concurrently calling all functions
         registered to that event type.

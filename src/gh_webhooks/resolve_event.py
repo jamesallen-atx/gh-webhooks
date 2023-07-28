@@ -1,6 +1,6 @@
 import inspect
 import logging
-from typing import Any, Dict, Type
+from typing import Any, Dict, Type, Optional
 
 import stringcase
 
@@ -11,7 +11,7 @@ from gh_webhooks.types import Model
 logger = logging.getLogger(__name__)
 
 
-def _get_cls(kind: str) -> Type[Model]:
+def _get_cls(kind: Optional[str]) -> Type[Model]:
     class_name = stringcase.pascalcase(kind) + "Event"
     matches = [
         obj for name, obj in inspect.getmembers(generated_types) if name == class_name
