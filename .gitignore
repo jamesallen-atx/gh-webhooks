@@ -1,3 +1,6 @@
+.idea/
+.python-version
+
 node_modules
 .serverless
 

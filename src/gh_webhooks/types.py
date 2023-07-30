@@ -7,37 +7,10 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import AnyUrl, EmailStr, Extra, Field
+from pydantic import AnyUrl, Extra, Field, confloat
 from typing_extensions import Literal
 
 from gh_webhooks.base import GhWebhooksModel
-
-
-class AuthorizedActorsOnly(GhWebhooksModel):
-    class Config:
-        pass
-
-    from_: Optional[bool] = Field(None, alias="from")
-
-
-class AuthorizedActorNames(GhWebhooksModel):
-    class Config:
-        pass
-
-    from_: Optional[List[str]] = Field(None, alias="from")
-
-
-class RequiredStatusChecks(AuthorizedActorNames):
-    pass
-
-
-class Changes(GhWebhooksModel):
-    class Config:
-        pass
-
-    authorized_actors_only: Optional[AuthorizedActorsOnly] = None
-    authorized_actor_names: Optional[AuthorizedActorNames] = None
-    required_status_checks: Optional[RequiredStatusChecks] = None
 
 
 class Conclusion(Enum):
@@ -56,9 +29,9 @@ class Output(GhWebhooksModel):
     class Config:
         pass
 
-    title: Optional[Optional[str]] = None
-    summary: Optional[Optional[str]] = None
-    text: Optional[Optional[str]] = None
+    title: Optional[str] = None
+    summary: Optional[str] = None
+    text: Optional[str] = None
     annotations_count: Optional[int] = None
     annotations_url: Optional[AnyUrl] = None
 
@@ -97,30 +70,10 @@ class Status1(str, Enum):
     waiting = "waiting"
 
 
-class Output1(Output):
-    pass
-
-
 class Status2(str, Enum):
     queued = "queued"
     in_progress = "in_progress"
     completed = "completed"
-
-
-class RequestedAction1(RequestedAction):
-    pass
-
-
-class Output2(Output):
-    pass
-
-
-class RequestedAction2(RequestedAction):
-    pass
-
-
-class Output3(Output):
-    pass
 
 
 class Conclusion7(str, Enum):
@@ -131,10 +84,6 @@ class Conclusion7(str, Enum):
     timed_out = "timed_out"
     action_required = "action_required"
     stale = "stale"
-
-
-class RequestedAction3(RequestedAction):
-    pass
 
 
 class Status5(Enum):
@@ -187,7 +136,7 @@ class Tool(GhWebhooksModel):
         None,
         description="The name of the tool used to generate the code scanning analysis alert.",
     )
-    version: Optional[Optional[str]] = Field(
+    version: Optional[str] = Field(
         None, description="The version of the tool used to detect the alert."
     )
 
@@ -205,8 +154,8 @@ class Rule1(GhWebhooksModel):
     )
     name: Optional[str] = None
     full_description: Optional[str] = None
-    tags: Optional[Any] = None
-    help: Optional[Any] = None
+    tags: None = None
+    help: None = None
 
 
 class Tool1(GhWebhooksModel):
@@ -217,10 +166,10 @@ class Tool1(GhWebhooksModel):
         None,
         description="The name of the tool used to generate the code scanning analysis alert.",
     )
-    version: Optional[Optional[str]] = Field(
+    version: Optional[str] = Field(
         None, description="The version of the tool used to detect the alert."
     )
-    guid: Optional[Optional[str]] = None
+    guid: Optional[str] = None
 
 
 class State1(str, Enum):
@@ -232,23 +181,11 @@ class Rule2(Rule1):
     pass
 
 
-class Tool2(Tool1):
-    pass
-
-
 class Rule3(Rule1):
     pass
 
 
-class Tool3(Tool1):
-    pass
-
-
 class Rule4(Rule1):
-    pass
-
-
-class Tool4(Tool1):
     pass
 
 
@@ -265,6 +202,14 @@ class RefType(str, Enum):
     branch = "branch"
 
 
+class DismissedReason3(str, Enum):
+    fix_started = "fix_started"
+    inaccurate = "inaccurate"
+    no_bandwidth = "no_bandwidth"
+    not_used = "not_used"
+    tolerable_risk = "tolerable_risk"
+
+
 class Key(GhWebhooksModel):
     class Config:
         pass
@@ -274,12 +219,18 @@ class Key(GhWebhooksModel):
     url: Optional[AnyUrl] = None
     title: Optional[str] = None
     verified: Optional[bool] = None
-    created_at: Optional[str] = None
+    created_at: Optional[datetime] = None
     read_only: Optional[bool] = None
 
 
-class Key1(Key):
-    pass
+class State4(str, Enum):
+    pending = "pending"
+    in_progress = "in_progress"
+    success = "success"
+    failure = "failure"
+    error = "error"
+    waiting = "waiting"
+    queued = "queued"
 
 
 class CheckRun4(GhWebhooksModel):
@@ -305,7 +256,7 @@ class CheckRun4(GhWebhooksModel):
         description="The result of the completed check run. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed.",
     )
     started_at: Optional[datetime] = None
-    completed_at: Optional[Optional[str]] = None
+    completed_at: Optional[datetime] = None
 
 
 class Category(GhWebhooksModel):
@@ -322,7 +273,7 @@ class From(GhWebhooksModel):
     name: Optional[str] = None
     description: Optional[str] = None
     created_at: Optional[datetime] = None
-    updated_at: Optional[str] = None
+    updated_at: Optional[datetime] = None
     slug: Optional[str] = None
     is_answerable: Optional[bool] = None
 
@@ -341,7 +292,7 @@ class Changes1(GhWebhooksModel):
     category: Optional[Category1] = None
 
 
-class State4(str, Enum):
+class State5(str, Enum):
     open = "open"
     converting = "converting"
 
@@ -369,15 +320,11 @@ class Category2(Category):
     pass
 
 
-class Body1(Title):
-    pass
-
-
 class Changes4(GhWebhooksModel):
     class Config:
         pass
 
-    body: Optional[Body1] = None
+    body: Optional[Body] = None
 
 
 class Action(str, Enum):
@@ -391,7 +338,7 @@ class Page(GhWebhooksModel):
 
     page_name: Optional[str] = Field(None, description="The name of the page.")
     title: Optional[str] = Field(None, description="The current page title.")
-    summary: Optional[Any] = None
+    summary: None = None
     action: Optional[Action] = Field(
         None,
         description="The action that was performed on the page. Can be `created` or `edited`.",
@@ -415,22 +362,6 @@ class Repository1(GhWebhooksModel):
     )
 
 
-class Repository2(Repository1):
-    pass
-
-
-class Repository3(Repository1):
-    pass
-
-
-class Repository4(Repository1):
-    pass
-
-
-class Repository5(Repository1):
-    pass
-
-
 class RepositorySelection(str, Enum):
     all = "all"
     selected = "selected"
@@ -444,15 +375,68 @@ class RepositoriesRemovedItem(Repository1):
     pass
 
 
-class RepositoriesAddedItem1(Repository1):
+class Login(Title):
     pass
 
 
-class RepositoriesRemovedItem1(Repository1):
+class Slug(Title):
     pass
 
 
-class State5(str, Enum):
+class Changes5(GhWebhooksModel):
+    class Config:
+        pass
+
+    login: Optional[Login] = None
+    slug: Optional[Slug] = None
+
+
+class Type(str, Enum):
+    Bot = "Bot"
+    User = "User"
+    Organization = "Organization"
+
+
+class Account(GhWebhooksModel):
+    class Config:
+        pass
+
+    avatar_url: Optional[AnyUrl] = None
+    created_at: Optional[datetime] = None
+    events_url: Optional[str] = None
+    followers: Optional[int] = None
+    followers_url: Optional[AnyUrl] = None
+    following: Optional[int] = None
+    following_url: Optional[str] = None
+    gists_url: Optional[str] = None
+    gravatar_id: Optional[str] = None
+    has_organization_projects: Optional[bool] = None
+    has_repository_projects: Optional[bool] = None
+    hooks_url: Optional[str] = None
+    html_url: Optional[AnyUrl] = None
+    id: Optional[int] = None
+    is_verified: Optional[bool] = None
+    issues_url: Optional[str] = None
+    login: Optional[str] = None
+    members_url: Optional[str] = None
+    name: Optional[str] = None
+    node_id: Optional[str] = None
+    organizations_url: Optional[AnyUrl] = None
+    public_gists: Optional[int] = None
+    public_members_url: Optional[str] = None
+    public_repos: Optional[int] = None
+    received_events_url: Optional[AnyUrl] = None
+    repos_url: Optional[AnyUrl] = None
+    site_admin: Optional[bool] = None
+    slug: Optional[str] = None
+    starred_url: Optional[str] = None
+    subscriptions_url: Optional[AnyUrl] = None
+    type: Optional[Type] = None
+    updated_at: Optional[datetime] = None
+    url: Optional[AnyUrl] = None
+
+
+class State6(str, Enum):
     open = "open"
     closed = "closed"
 
@@ -466,15 +450,11 @@ class Body2(GhWebhooksModel):
     )
 
 
-class Changes5(GhWebhooksModel):
+class Changes6(GhWebhooksModel):
     class Config:
         pass
 
     body: Optional[Body2] = None
-
-
-class Body3(Body2):
-    pass
 
 
 class Title1(GhWebhooksModel):
@@ -486,11 +466,11 @@ class Title1(GhWebhooksModel):
     )
 
 
-class Changes6(GhWebhooksModel):
+class Changes7(GhWebhooksModel):
     class Config:
         pass
 
-    body: Optional[Body3] = None
+    body: Optional[Body2] = None
     title: Optional[Title1] = None
 
 
@@ -535,7 +515,7 @@ class Description(GhWebhooksModel):
     )
 
 
-class Changes9(GhWebhooksModel):
+class Changes10(GhWebhooksModel):
     class Config:
         pass
 
@@ -568,22 +548,6 @@ class Sender(GhWebhooksModel):
     email: Optional[str] = None
 
 
-class Sender1(Sender):
-    pass
-
-
-class Sender2(Sender):
-    pass
-
-
-class Sender3(Sender):
-    pass
-
-
-class Sender4(Sender):
-    pass
-
-
 class To(str, Enum):
     write = "write"
     admin = "admin"
@@ -596,7 +560,7 @@ class Permission(GhWebhooksModel):
     to: Optional[To] = None
 
 
-class Changes10(GhWebhooksModel):
+class Changes11(GhWebhooksModel):
     class Config:
         pass
 
@@ -614,7 +578,7 @@ class OldPermission(GhWebhooksModel):
     )
 
 
-class Changes11(GhWebhooksModel):
+class Changes12(GhWebhooksModel):
     class Config:
         pass
 
@@ -635,23 +599,79 @@ class TeamItem(GhWebhooksModel):
     deleted: Optional[bool] = None
 
 
+class Author(GhWebhooksModel):
+    class Config:
+        pass
+
+    name: Optional[str] = None
+    email: Optional[str] = None
+
+
+class Committer(Author):
+    pass
+
+
+class HeadCommit(GhWebhooksModel):
+    class Config:
+        pass
+
+    id: Optional[str] = None
+    tree_id: Optional[str] = None
+    message: Optional[str] = None
+    timestamp: Optional[datetime] = None
+    author: Optional[Author] = None
+    committer: Optional[Committer] = None
+
+
+class MergeGroup(GhWebhooksModel):
+    class Config:
+        pass
+
+    head_sha: Optional[str] = Field(None, description="The SHA of the merge group.")
+    head_ref: Optional[str] = Field(
+        None, description="The full ref of the merge group."
+    )
+    base_ref: Optional[str] = Field(
+        None,
+        description="The full ref of the branch the merge group will be merged into.",
+    )
+    base_sha: Optional[str] = Field(
+        None, description="The SHA of the merge group's parent commit."
+    )
+    head_commit: Optional[HeadCommit] = Field(
+        None, description="An expanded representation of the `head_sha` commit."
+    )
+
+
 class ContentType(str, Enum):
     json = "json"
     form = "form"
+
+
+class InsecureSsl(str, Enum):
+    field_0 = "0"
+    field_1 = "1"
 
 
 class Config(GhWebhooksModel):
     class Config:
         pass
 
-    content_type: Optional[ContentType] = None
-    insecure_ssl: Optional[str] = None
-    url: Optional[AnyUrl] = None
-    secret: Optional[str] = None
-
-
-class Description1(Description):
-    pass
+    content_type: Optional[ContentType] = Field(
+        None,
+        description="The media type used to serialize the payloads. Supported values include `json` and `form`. The default is `form`.",
+    )
+    secret: Optional[str] = Field(
+        None,
+        description="If provided, the `secret` will be used as the `key` to generate the HMAC hex digest value for [delivery signature headers](https://docs.github.com/webhooks/event-payloads/#delivery-headers).",
+    )
+    url: Optional[AnyUrl] = Field(
+        None, description="The URL to which the payloads will be delivered."
+    )
+    insecure_ssl: Optional[InsecureSsl] = Field(
+        None,
+        description="Determines whether the SSL certificate of the host for `url` will be verified when delivering payloads. Supported values include `0` (verification is performed) and `1` (verification is not performed). The default is `0`.",
+    )
 
 
 class DueOn(GhWebhooksModel):
@@ -676,13 +696,59 @@ class Title2(GhWebhooksModel):
     )
 
 
-class Changes12(GhWebhooksModel):
+class Changes13(GhWebhooksModel):
     class Config:
         pass
 
-    description: Optional[Description1] = None
+    description: Optional[Description] = None
     due_on: Optional[DueOn] = None
     title: Optional[Title2] = None
+
+
+class Changes14(GhWebhooksModel):
+    class Config:
+        pass
+
+    login: Optional[Login] = None
+
+
+class PackageType(str, Enum):
+    npm = "npm"
+    maven = "maven"
+    rubygems = "rubygems"
+    docker = "docker"
+    nuget = "nuget"
+    CONTAINER = "CONTAINER"
+
+
+class Info(GhWebhooksModel):
+    class Config:
+        pass
+
+    type: Optional[str] = None
+    oid: Optional[str] = None
+    mode: Optional[int] = None
+    name: Optional[str] = None
+    path: Optional[str] = None
+    size: Optional[int] = None
+    collection: Optional[bool] = None
+
+
+class Tag(GhWebhooksModel):
+    class Config:
+        pass
+
+    digest: Optional[str] = None
+    name: Optional[str] = None
+
+
+class ContainerMetadatum(GhWebhooksModel):
+    class Config:
+        pass
+
+    labels: Optional[Dict[str, Any]] = None
+    manifest: Optional[Dict[str, Any]] = None
+    tag: Optional[Tag] = None
 
 
 class PackageFile(GhWebhooksModel):
@@ -698,8 +764,8 @@ class PackageFile(GhWebhooksModel):
     content_type: Optional[str] = None
     state: Optional[str] = None
     size: Optional[int] = None
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 
 class Registry(GhWebhooksModel):
@@ -713,11 +779,7 @@ class Registry(GhWebhooksModel):
     vendor: Optional[str] = None
 
 
-class PackageFile1(PackageFile):
-    pass
-
-
-class Registry1(Registry):
+class ContainerMetadatum1(ContainerMetadatum):
     pass
 
 
@@ -725,26 +787,26 @@ class Error(GhWebhooksModel):
     class Config:
         pass
 
-    message: Optional[Optional[str]] = None
+    message: Optional[str] = None
 
 
-class Config1(GhWebhooksModel):
-    class Config:
-        pass
+class Type1(str, Enum):
+    Repository = "Repository"
+    Organization = "Organization"
+    App = "App"
 
-    content_type: Optional[ContentType] = None
-    secret: Optional[str] = None
-    url: Optional[AnyUrl] = None
-    insecure_ssl: Optional[str] = None
+
+class Config1(Config):
+    pass
 
 
 class LastResponse(GhWebhooksModel):
     class Config:
         pass
 
-    code: Optional[Any] = None
+    code: None = None
     status: Optional[str] = None
-    message: Optional[Any] = None
+    message: None = None
 
 
 class Name1(GhWebhooksModel):
@@ -769,7 +831,7 @@ class Body4(GhWebhooksModel):
     )
 
 
-class Changes13(GhWebhooksModel):
+class Changes15(GhWebhooksModel):
     class Config:
         pass
 
@@ -781,22 +843,15 @@ class Note(Title):
     pass
 
 
-class Changes14(GhWebhooksModel):
+class Changes16(GhWebhooksModel):
     class Config:
         pass
 
     note: Optional[Note] = None
 
 
-class Note1(Title):
+class Changes17(Changes16):
     pass
-
-
-class Changes15(GhWebhooksModel):
-    class Config:
-        pass
-
-    note: Optional[Note1] = None
 
 
 class ColumnId(GhWebhooksModel):
@@ -806,7 +861,7 @@ class ColumnId(GhWebhooksModel):
     from_: Optional[int] = Field(None, alias="from")
 
 
-class Changes16(GhWebhooksModel):
+class Changes18(GhWebhooksModel):
     class Config:
         pass
 
@@ -817,7 +872,7 @@ class Name2(Title):
     pass
 
 
-class Changes17(GhWebhooksModel):
+class Changes19(GhWebhooksModel):
     class Config:
         pass
 
@@ -828,11 +883,11 @@ class ArchivedAt(GhWebhooksModel):
     class Config:
         pass
 
-    from_: Optional[Any] = Field(None, alias="from")
+    from_: None = Field(None, alias="from")
     to: Optional[datetime] = None
 
 
-class Changes18(GhWebhooksModel):
+class Changes20(GhWebhooksModel):
     class Config:
         pass
 
@@ -847,7 +902,7 @@ class ContentType2(GhWebhooksModel):
     to: Optional[Literal["Issue"]] = None
 
 
-class Changes19(GhWebhooksModel):
+class Changes21(GhWebhooksModel):
     class Config:
         pass
 
@@ -870,7 +925,7 @@ class FieldValue(GhWebhooksModel):
     field_node_id: Optional[str] = None
 
 
-class Changes20(GhWebhooksModel):
+class Changes22(GhWebhooksModel):
     class Config:
         pass
 
@@ -882,10 +937,10 @@ class PreviousProjectsV2ItemNodeId(GhWebhooksModel):
         pass
 
     from_: Optional[str] = Field(None, alias="from")
-    to: Optional[Optional[str]] = None
+    to: Optional[str] = None
 
 
-class Changes21(GhWebhooksModel):
+class Changes23(GhWebhooksModel):
     class Config:
         pass
 
@@ -897,22 +952,14 @@ class ArchivedAt1(GhWebhooksModel):
         pass
 
     from_: Optional[datetime] = Field(None, alias="from")
-    to: Optional[Any] = None
+    to: None = None
 
 
-class Changes22(GhWebhooksModel):
+class Changes24(GhWebhooksModel):
     class Config:
         pass
 
     archived_at: Optional[ArchivedAt1] = None
-
-
-class Body5(Body4):
-    pass
-
-
-class Title3(Title2):
-    pass
 
 
 class Ref(Title):
@@ -931,35 +978,127 @@ class Base(GhWebhooksModel):
     sha: Optional[Sha] = None
 
 
-class Changes23(GhWebhooksModel):
+class Changes25(GhWebhooksModel):
     class Config:
         pass
 
-    body: Optional[Body5] = None
-    title: Optional[Title3] = None
+    body: Optional[Body4] = None
+    title: Optional[Title2] = None
     base: Optional[Base] = None
 
 
-class Body6(Body4):
-    pass
-
-
-class Changes24(GhWebhooksModel):
+class Changes26(GhWebhooksModel):
     class Config:
         pass
 
-    body: Optional[Body6] = None
+    body: Optional[Body4] = None
 
 
 class Body7(Body2):
     pass
 
 
-class Changes25(GhWebhooksModel):
+class Changes27(GhWebhooksModel):
     class Config:
         pass
 
     body: Optional[Body7] = None
+
+
+class Info2(GhWebhooksModel):
+    class Config:
+        pass
+
+    type: Optional[str] = None
+    oid: Optional[str] = None
+    mode: Optional[int] = None
+    name: Optional[str] = None
+    path: Optional[str] = None
+    size: Optional[int] = None
+    collection: Optional[bool] = None
+
+
+class Label1(GhWebhooksModel):
+    class Config:
+        pass
+
+    description: Optional[str] = None
+    source: Optional[AnyUrl] = None
+    revision: Optional[str] = None
+    image_url: Optional[AnyUrl] = None
+    licenses: Optional[str] = None
+    all_labels: Optional[Dict[str, str]] = None
+
+
+class Config2(GhWebhooksModel):
+    class Config:
+        pass
+
+    digest: Optional[str] = None
+    media_type: Optional[str] = None
+    size: Optional[int] = None
+
+
+class Layer(Config2):
+    pass
+
+
+class ManifestItem(GhWebhooksModel):
+    class Config:
+        pass
+
+    digest: Optional[str] = None
+    media_type: Optional[str] = None
+    uri: Optional[str] = None
+    size: Optional[int] = None
+    config: Optional[Config2] = None
+    layers: Optional[List[Layer]] = None
+
+
+class ContainerMetadata(GhWebhooksModel):
+    class Config:
+        pass
+
+    labels: Optional[Label1] = None
+    manifest: Optional[ManifestItem] = None
+    tag: Optional[Tag] = None
+
+
+class Author1(GhWebhooksModel):
+    class Config:
+        pass
+
+    avatar_url: Optional[str] = None
+    events_url: Optional[str] = None
+    followers_url: Optional[str] = None
+    following_url: Optional[str] = None
+    gists_url: Optional[str] = None
+    gravatar_id: Optional[str] = None
+    html_url: Optional[str] = None
+    id: Optional[int] = None
+    login: Optional[str] = None
+    node_id: Optional[str] = None
+    organizations_url: Optional[str] = None
+    received_events_url: Optional[str] = None
+    repos_url: Optional[str] = None
+    site_admin: Optional[bool] = None
+    starred_url: Optional[str] = None
+    subscriptions_url: Optional[str] = None
+    type: Optional[str] = None
+    url: Optional[str] = None
+
+
+class ManifestItem1(ManifestItem):
+    pass
+
+
+class ContainerMetadata1(GhWebhooksModel):
+    class Config:
+        pass
+
+    labels: Optional[Label1] = None
+    manifest: Optional[ManifestItem1] = None
+    tag: Optional[Tag] = None
 
 
 class Body8(Body4):
@@ -970,7 +1109,7 @@ class Name3(Name):
     pass
 
 
-class Changes26(GhWebhooksModel):
+class Changes28(GhWebhooksModel):
     class Config:
         pass
 
@@ -982,7 +1121,7 @@ class Description2(GhWebhooksModel):
     class Config:
         pass
 
-    from_: Optional[Optional[str]] = Field(None, alias="from")
+    from_: Optional[str] = Field(None, alias="from")
 
 
 class DefaultBranch(Title):
@@ -993,31 +1132,39 @@ class Homepage(Description2):
     pass
 
 
-class Changes27(GhWebhooksModel):
+class Topics(GhWebhooksModel):
+    class Config:
+        pass
+
+    from_: Optional[List[str]] = Field(None, alias="from")
+
+
+class Changes29(GhWebhooksModel):
     class Config:
         pass
 
     description: Optional[Description2] = None
     default_branch: Optional[DefaultBranch] = None
     homepage: Optional[Homepage] = None
+    topics: Optional[Topics] = None
 
 
 class Name4(Title):
     pass
 
 
-class Repository10(GhWebhooksModel):
+class Repository14(GhWebhooksModel):
     class Config:
         pass
 
     name: Optional[Name4] = None
 
 
-class Changes28(GhWebhooksModel):
+class Changes30(GhWebhooksModel):
     class Config:
         pass
 
-    repository: Optional[Repository10] = None
+    repository: Optional[Repository14] = None
 
 
 class Status9(str, Enum):
@@ -1026,24 +1173,20 @@ class Status9(str, Enum):
     failure = "failure"
 
 
-class Alert10(GhWebhooksModel):
+class Alert14(GhWebhooksModel):
     class Config:
         pass
 
     number: Optional[int] = None
     secret_type: Optional[str] = None
-    resolution: Optional[Any] = None
-    resolved_by: Optional[Any] = None
-    resolved_at: Optional[Any] = None
-
-
-class Alert11(Alert10):
-    pass
+    resolution: None = None
+    resolved_by: None = None
+    resolved_at: None = None
 
 
 class Resolution(str, Enum):
     false_positive = "false_positive"
-    wontfix = "wontfix"
+    wont_fix = "wont_fix"
     revoked = "revoked"
     used_in_tests = "used_in_tests"
 
@@ -1052,7 +1195,7 @@ class Cvss(GhWebhooksModel):
     class Config:
         pass
 
-    vector_string: Optional[Optional[str]] = None
+    vector_string: Optional[str] = None
     score: Optional[float] = None
 
 
@@ -1111,14 +1254,15 @@ class SecurityAdvisory(GhWebhooksModel):
     cvss: Optional[Cvss] = None
     cwes: Optional[List[Cwe]] = None
     ghsa_id: Optional[str] = None
+    cve_id: Optional[str] = None
     summary: Optional[str] = None
     description: Optional[str] = None
     severity: Optional[str] = None
     identifiers: Optional[List[Identifier]] = None
     references: Optional[List[Reference]] = None
-    published_at: Optional[str] = None
-    updated_at: Optional[str] = None
-    withdrawn_at: Optional[Optional[str]] = None
+    published_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    withdrawn_at: Optional[datetime] = None
     vulnerabilities: Optional[List[Vulnerability]] = None
 
 
@@ -1133,55 +1277,26 @@ class SecurityAdvisoryPerformed(GhWebhooksModel):
     )
 
 
-class Cvss1(Cvss):
+class Vulnerability1(Vulnerability):
     pass
-
-
-class Cwe1(Cwe):
-    pass
-
-
-class Identifier1(Identifier):
-    pass
-
-
-class Reference1(Reference):
-    pass
-
-
-class Package3(Package2):
-    pass
-
-
-class FirstPatchedVersion1(FirstPatchedVersion):
-    pass
-
-
-class Vulnerability1(GhWebhooksModel):
-    class Config:
-        pass
-
-    package: Optional[Package3] = None
-    severity: Optional[str] = None
-    vulnerable_version_range: Optional[str] = None
-    first_patched_version: Optional[FirstPatchedVersion1] = None
 
 
 class SecurityAdvisory1(GhWebhooksModel):
     class Config:
         pass
 
-    cvss: Optional[Cvss1] = None
-    cwes: Optional[List[Cwe1]] = None
+    cvss: Optional[Cvss] = None
+    cwes: Optional[List[Cwe]] = None
     ghsa_id: Optional[str] = None
+    cve_id: Optional[str] = None
     summary: Optional[str] = None
     description: Optional[str] = None
     severity: Optional[str] = None
-    identifiers: Optional[List[Identifier1]] = None
-    references: Optional[List[Reference1]] = None
-    published_at: Optional[str] = None
-    updated_at: Optional[str] = None
-    withdrawn_at: Optional[Optional[str]] = None
+    identifiers: Optional[List[Identifier]] = None
+    references: Optional[List[Reference]] = None
+    published_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    withdrawn_at: Optional[datetime] = None
     vulnerabilities: Optional[List[Vulnerability1]] = None
 
 
@@ -1196,55 +1311,26 @@ class SecurityAdvisoryPublished(GhWebhooksModel):
     )
 
 
-class Cvss2(Cvss):
+class Vulnerability2(Vulnerability):
     pass
-
-
-class Cwe2(Cwe):
-    pass
-
-
-class Identifier2(Identifier):
-    pass
-
-
-class Reference2(Reference):
-    pass
-
-
-class Package4(Package2):
-    pass
-
-
-class FirstPatchedVersion2(FirstPatchedVersion):
-    pass
-
-
-class Vulnerability2(GhWebhooksModel):
-    class Config:
-        pass
-
-    package: Optional[Package4] = None
-    severity: Optional[str] = None
-    vulnerable_version_range: Optional[str] = None
-    first_patched_version: Optional[FirstPatchedVersion2] = None
 
 
 class SecurityAdvisory2(GhWebhooksModel):
     class Config:
         pass
 
-    cvss: Optional[Cvss2] = None
-    cwes: Optional[List[Cwe2]] = None
+    cvss: Optional[Cvss] = None
+    cwes: Optional[List[Cwe]] = None
     ghsa_id: Optional[str] = None
+    cve_id: Optional[str] = None
     summary: Optional[str] = None
     description: Optional[str] = None
     severity: Optional[str] = None
-    identifiers: Optional[List[Identifier2]] = None
-    references: Optional[List[Reference2]] = None
-    published_at: Optional[str] = None
-    updated_at: Optional[str] = None
-    withdrawn_at: Optional[Optional[str]] = None
+    identifiers: Optional[List[Identifier]] = None
+    references: Optional[List[Reference]] = None
+    published_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    withdrawn_at: Optional[datetime] = None
     vulnerabilities: Optional[List[Vulnerability2]] = None
 
 
@@ -1259,55 +1345,26 @@ class SecurityAdvisoryUpdated(GhWebhooksModel):
     )
 
 
-class Cvss3(Cvss):
+class Vulnerability3(Vulnerability):
     pass
-
-
-class Cwe3(Cwe):
-    pass
-
-
-class Identifier3(Identifier):
-    pass
-
-
-class Reference3(Reference):
-    pass
-
-
-class Package5(Package2):
-    pass
-
-
-class FirstPatchedVersion3(FirstPatchedVersion):
-    pass
-
-
-class Vulnerability3(GhWebhooksModel):
-    class Config:
-        pass
-
-    package: Optional[Package5] = None
-    severity: Optional[str] = None
-    vulnerable_version_range: Optional[str] = None
-    first_patched_version: Optional[FirstPatchedVersion3] = None
 
 
 class SecurityAdvisory3(GhWebhooksModel):
     class Config:
         pass
 
-    cvss: Optional[Cvss3] = None
-    cwes: Optional[List[Cwe3]] = None
+    cvss: Optional[Cvss] = None
+    cwes: Optional[List[Cwe]] = None
     ghsa_id: Optional[str] = None
+    cve_id: Optional[str] = None
     summary: Optional[str] = None
     description: Optional[str] = None
     severity: Optional[str] = None
-    identifiers: Optional[List[Identifier3]] = None
-    references: Optional[List[Reference3]] = None
-    published_at: Optional[str] = None
-    updated_at: Optional[str] = None
-    withdrawn_at: Optional[str] = None
+    identifiers: Optional[List[Identifier]] = None
+    references: Optional[List[Reference]] = None
+    published_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    withdrawn_at: Optional[datetime] = None
     vulnerabilities: Optional[List[Vulnerability3]] = None
 
 
@@ -1344,14 +1401,14 @@ class PrivacyLevel(GhWebhooksModel):
     )
 
 
-class Changes30(GhWebhooksModel):
+class Changes32(GhWebhooksModel):
     class Config:
         pass
 
     privacy_level: Optional[PrivacyLevel] = None
 
 
-class State11(str, Enum):
+class State12(str, Enum):
     pending = "pending"
     success = "success"
     failure = "failure"
@@ -1388,8 +1445,8 @@ class Verification(GhWebhooksModel):
 
     verified: Optional[bool] = None
     reason: Optional[Reason] = None
-    signature: Optional[Optional[str]] = None
-    payload: Optional[Optional[str]] = None
+    signature: Optional[str] = None
+    payload: Optional[str] = None
 
 
 class Parent(GhWebhooksModel):
@@ -1458,21 +1515,21 @@ class Permissions(GhWebhooksModel):
     from_: Optional[From2] = Field(None, alias="from")
 
 
-class Repository12(GhWebhooksModel):
+class Repository16(GhWebhooksModel):
     class Config:
         pass
 
     permissions: Optional[Permissions] = None
 
 
-class Changes33(GhWebhooksModel):
+class Changes35(GhWebhooksModel):
     class Config:
         pass
 
     description: Optional[Description3] = None
     name: Optional[Name5] = None
     privacy: Optional[Privacy] = None
-    repository: Optional[Repository12] = None
+    repository: Optional[Repository16] = None
 
 
 class Conclusion12(str, Enum):
@@ -1480,6 +1537,16 @@ class Conclusion12(str, Enum):
     failure = "failure"
     cancelled = "cancelled"
     skipped = "skipped"
+
+
+class Status10(str, Enum):
+    queued = "queued"
+    in_progress = "in_progress"
+
+
+class Status11(str, Enum):
+    queued = "queued"
+    waiting = "waiting"
 
 
 class Conclusion13(str, Enum):
@@ -1545,6 +1612,7 @@ class Permissions1(GhWebhooksModel):
 
     actions: Optional[Actions] = None
     administration: Optional[Actions] = None
+    blocking: Optional[Actions] = None
     checks: Optional[Actions] = None
     content_references: Optional[Actions] = None
     contents: Optional[Actions] = None
@@ -1552,9 +1620,13 @@ class Permissions1(GhWebhooksModel):
     discussions: Optional[Actions] = None
     emails: Optional[Actions] = None
     environments: Optional[Actions] = None
+    followers: Optional[Actions] = None
+    gpg_keys: Optional[Actions] = None
+    interaction_limits: Optional[Actions] = None
     issues: Optional[Actions] = None
     keys: Optional[Actions] = None
     members: Optional[Actions] = None
+    merge_queues: Optional[Actions] = None
     metadata: Optional[Actions] = None
     organization_administration: Optional[Actions] = None
     organization_hooks: Optional[Actions] = None
@@ -1566,6 +1638,7 @@ class Permissions1(GhWebhooksModel):
     organization_user_blocking: Optional[Actions] = None
     packages: Optional[Actions] = None
     pages: Optional[Actions] = None
+    plan: Optional[Actions] = None
     pull_requests: Optional[Actions] = None
     repository_hooks: Optional[Actions] = None
     repository_projects: Optional[Actions] = None
@@ -1574,9 +1647,11 @@ class Permissions1(GhWebhooksModel):
     security_events: Optional[Actions] = None
     security_scanning_alert: Optional[Actions] = None
     single_file: Optional[Actions] = None
+    starring: Optional[Actions] = None
     statuses: Optional[Actions] = None
     team_discussions: Optional[Actions] = None
     vulnerability_alerts: Optional[Actions] = None
+    watching: Optional[Actions] = None
     workflows: Optional[Actions] = None
 
 
@@ -1586,10 +1661,11 @@ class Event(str, Enum):
     check_suite = "check_suite"
     code_scanning_alert = "code_scanning_alert"
     commit_comment = "commit_comment"
-    content_reference = "content_reference"
     create = "create"
     delete = "delete"
+    dependabot_alert = "dependabot_alert"
     deployment = "deployment"
+    deployment_protection_rule = "deployment_protection_rule"
     deployment_review = "deployment_review"
     deployment_status = "deployment_status"
     deploy_key = "deploy_key"
@@ -1602,29 +1678,37 @@ class Event(str, Enum):
     label = "label"
     member = "member"
     membership = "membership"
+    merge_group = "merge_group"
+    merge_queue_entry = "merge_queue_entry"
     milestone = "milestone"
     organization = "organization"
     org_block = "org_block"
     page_build = "page_build"
     project = "project"
+    projects_v2_item = "projects_v2_item"
     project_card = "project_card"
     project_column = "project_column"
     public = "public"
     pull_request = "pull_request"
     pull_request_review = "pull_request_review"
     pull_request_review_comment = "pull_request_review_comment"
+    pull_request_review_thread = "pull_request_review_thread"
     push = "push"
     registry_package = "registry_package"
     release = "release"
     repository = "repository"
     repository_dispatch = "repository_dispatch"
+    repository_ruleset = "repository_ruleset"
     secret_scanning_alert = "secret_scanning_alert"
+    secret_scanning_alert_location = "secret_scanning_alert_location"
+    security_and_analysis = "security_and_analysis"
     star = "star"
     status = "status"
     team = "team"
     team_add = "team_add"
     watch = "watch"
     workflow_dispatch = "workflow_dispatch"
+    workflow_job = "workflow_job"
     workflow_run = "workflow_run"
 
 
@@ -1645,10 +1729,22 @@ class MergeMethod(str, Enum):
     rebase = "rebase"
 
 
-class PullRequestReviewsEnforcementLevel(str, Enum):
+class BranchProtectionRuleArray(GhWebhooksModel):
+    __root__: Optional[List[str]] = Field(None, title="Branch Protection Rule Array")
+
+
+class BranchProtectionRuleBoolean(GhWebhooksModel):
+    __root__: Optional[bool] = Field(None, title="Branch protection rule boolean")
+
+
+class BranchProtectionRuleEnforcementLevel(str, Enum):
     off = "off"
     non_admins = "non_admins"
     everyone = "everyone"
+
+
+class BranchProtectionRuleNumber(GhWebhooksModel):
+    __root__: Optional[int] = Field(None, title="Branch protection rule number")
 
 
 class BranchProtectionRule(GhWebhooksModel):
@@ -1661,41 +1757,42 @@ class BranchProtectionRule(GhWebhooksModel):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     pull_request_reviews_enforcement_level: Optional[
-        PullRequestReviewsEnforcementLevel
+        BranchProtectionRuleEnforcementLevel
     ] = None
-    required_approving_review_count: Optional[int] = None
-    dismiss_stale_reviews_on_push: Optional[bool] = None
-    require_code_owner_review: Optional[bool] = None
-    authorized_dismissal_actors_only: Optional[bool] = None
-    ignore_approvals_from_contributors: Optional[bool] = None
-    required_status_checks: Optional[List[str]] = None
+    required_approving_review_count: Optional[BranchProtectionRuleNumber] = None
+    dismiss_stale_reviews_on_push: Optional[BranchProtectionRuleBoolean] = None
+    require_code_owner_review: Optional[BranchProtectionRuleBoolean] = None
+    authorized_dismissal_actors_only: Optional[BranchProtectionRuleBoolean] = None
+    ignore_approvals_from_contributors: Optional[BranchProtectionRuleBoolean] = None
+    require_last_push_approval: Optional[BranchProtectionRuleBoolean] = None
+    required_status_checks: Optional[BranchProtectionRuleArray] = None
     required_status_checks_enforcement_level: Optional[
-        PullRequestReviewsEnforcementLevel
+        BranchProtectionRuleEnforcementLevel
     ] = None
-    strict_required_status_checks_policy: Optional[bool] = None
+    strict_required_status_checks_policy: Optional[BranchProtectionRuleBoolean] = None
     signature_requirement_enforcement_level: Optional[
-        PullRequestReviewsEnforcementLevel
+        BranchProtectionRuleEnforcementLevel
     ] = None
     linear_history_requirement_enforcement_level: Optional[
-        PullRequestReviewsEnforcementLevel
+        BranchProtectionRuleEnforcementLevel
     ] = None
-    admin_enforced: Optional[bool] = None
-    create_protected: Optional[bool] = None
+    admin_enforced: Optional[BranchProtectionRuleBoolean] = None
+    create_protected: Optional[BranchProtectionRuleBoolean] = None
     allow_force_pushes_enforcement_level: Optional[
-        PullRequestReviewsEnforcementLevel
+        BranchProtectionRuleEnforcementLevel
     ] = None
     allow_deletions_enforcement_level: Optional[
-        PullRequestReviewsEnforcementLevel
+        BranchProtectionRuleEnforcementLevel
     ] = None
-    merge_queue_enforcement_level: Optional[PullRequestReviewsEnforcementLevel] = None
+    merge_queue_enforcement_level: Optional[BranchProtectionRuleEnforcementLevel] = None
     required_deployments_enforcement_level: Optional[
-        PullRequestReviewsEnforcementLevel
+        BranchProtectionRuleEnforcementLevel
     ] = None
     required_conversation_resolution_level: Optional[
-        PullRequestReviewsEnforcementLevel
+        BranchProtectionRuleEnforcementLevel
     ] = None
-    authorized_actors_only: Optional[bool] = None
-    authorized_actor_names: Optional[List[str]] = None
+    authorized_actors_only: Optional[BranchProtectionRuleBoolean] = None
+    authorized_actor_names: Optional[BranchProtectionRuleArray] = None
 
 
 class CheckRunDeployment(GhWebhooksModel):
@@ -1708,26 +1805,132 @@ class CheckRunDeployment(GhWebhooksModel):
     task: Optional[str] = None
     original_environment: Optional[str] = None
     environment: Optional[str] = None
-    description: Optional[Optional[str]] = None
+    description: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     statuses_url: Optional[AnyUrl] = None
     repository_url: Optional[AnyUrl] = None
 
 
-class Committer(GhWebhooksModel):
+class CommitterModel(GhWebhooksModel):
     class Config:
         pass
 
     name: Optional[str] = Field(None, description="The git author's name.")
-    email: Optional[Optional[EmailStr]] = Field(
-        None, description="The git author's email address."
-    )
+    email: Optional[str] = Field(None, description="The git author's email address.")
     date: Optional[datetime] = None
     username: Optional[str] = None
 
 
-class Status10(str, Enum):
+class DependabotAlertPackage(GhWebhooksModel):
+    class Config:
+        pass
+
+    name: Optional[str] = Field(
+        None, description="The unique package name within its ecosystem."
+    )
+    ecosystem: Optional[str] = Field(
+        None, description="The package's language or package management ecosystem."
+    )
+
+
+class State14(str, Enum):
+    dismissed = "dismissed"
+    fixed = "fixed"
+    open = "open"
+    auto_dismissed = "auto_dismissed"
+
+
+class Scope1(Enum):
+    development = "development"
+    runtime = "runtime"
+    NoneType_None = None
+
+
+class Dependency(GhWebhooksModel):
+    class Config:
+        pass
+
+    package: Optional[DependabotAlertPackage] = None
+    manifest_path: Optional[str] = Field(
+        None,
+        description="The full path to the dependency manifest file, relative to the root of the repository.",
+    )
+    scope: Optional[Scope1] = Field(
+        None, description="The execution scope of the vulnerable dependency."
+    )
+
+
+class Severity6(str, Enum):
+    low = "low"
+    medium = "medium"
+    high = "high"
+    critical = "critical"
+
+
+class FirstPatchedVersion4(GhWebhooksModel):
+    class Config:
+        pass
+
+    identifier: Optional[str] = Field(
+        None, description="The package version that patches this vulnerability."
+    )
+
+
+class Vulnerability4(GhWebhooksModel):
+    class Config:
+        pass
+
+    package: Optional[DependabotAlertPackage] = None
+    severity: Optional[Severity6] = Field(
+        None, description="The severity of the vulnerability."
+    )
+    vulnerable_version_range: Optional[str] = Field(
+        None,
+        description="Conditions that identify vulnerable versions of this vulnerability's package.",
+    )
+    first_patched_version: Optional[FirstPatchedVersion4] = Field(
+        None,
+        description="Details pertaining to the package version that patches this vulnerability.",
+    )
+
+
+class Type2(str, Enum):
+    CVE = "CVE"
+    GHSA = "GHSA"
+
+
+class Identifier4(GhWebhooksModel):
+    class Config:
+        pass
+
+    type: Optional[Type2] = Field(None, description="The type of advisory identifier.")
+    value: Optional[str] = Field(
+        None, description="The value of the advisory identifer."
+    )
+
+
+class Reference4(GhWebhooksModel):
+    class Config:
+        pass
+
+    url: Optional[AnyUrl] = Field(None, description="The URL of the reference.")
+
+
+class SecurityVulnerability(Vulnerability4):
+    pass
+
+
+class DismissedReason4(Enum):
+    fix_started = "fix_started"
+    inaccurate = "inaccurate"
+    no_bandwidth = "no_bandwidth"
+    not_used = "not_used"
+    tolerable_risk = "tolerable_risk"
+    NoneType_None = None
+
+
+class Status12(str, Enum):
     requested = "requested"
     in_progress = "in_progress"
     completed = "completed"
@@ -1738,7 +1941,7 @@ class Category3(From):
     pass
 
 
-class State13(str, Enum):
+class State15(str, Enum):
     open = "open"
     locked = "locked"
     converting = "converting"
@@ -1748,26 +1951,44 @@ class GithubOrg(GhWebhooksModel):
     class Config:
         pass
 
-    login: Optional[str] = None
-    id: Optional[int] = None
-    node_id: Optional[str] = None
-    name: Optional[str] = None
-    email: Optional[Any] = None
-    avatar_url: Optional[AnyUrl] = None
-    gravatar_id: Optional[str] = None
-    url: Optional[AnyUrl] = None
-    html_url: Optional[AnyUrl] = None
-    followers_url: Optional[AnyUrl] = None
-    following_url: Optional[str] = None
-    gists_url: Optional[str] = None
-    starred_url: Optional[str] = None
-    subscriptions_url: Optional[AnyUrl] = None
-    organizations_url: Optional[AnyUrl] = None
-    repos_url: Optional[AnyUrl] = None
-    events_url: Optional[str] = None
-    received_events_url: Optional[AnyUrl] = None
-    type: Optional[str] = None
-    site_admin: Optional[bool] = None
+    login: str = Field("github", const=True)
+    id: int = Field(9919, const=True)
+    node_id: str = Field("MDEyOk9yZ2FuaXphdGlvbjk5MTk=", const=True)
+    name: str = Field("GitHub", const=True)
+    email: None = None
+    avatar_url: AnyUrl = Field(
+        "https://avatars.githubusercontent.com/u/9919?v=4", const=True
+    )
+    gravatar_id: str = Field("", const=True)
+    url: AnyUrl = Field("https://api.github.com/users/github", const=True)
+    html_url: AnyUrl = Field("https://github.com/github", const=True)
+    followers_url: AnyUrl = Field(
+        "https://api.github.com/users/github/followers", const=True
+    )
+    following_url: str = Field(
+        "https://api.github.com/users/github/following{/other_user}", const=True
+    )
+    gists_url: str = Field(
+        "https://api.github.com/users/github/gists{/gist_id}", const=True
+    )
+    starred_url: str = Field(
+        "https://api.github.com/users/github/starred{/owner}{/repo}", const=True
+    )
+    subscriptions_url: AnyUrl = Field(
+        "https://api.github.com/users/github/subscriptions", const=True
+    )
+    organizations_url: AnyUrl = Field(
+        "https://api.github.com/users/github/orgs", const=True
+    )
+    repos_url: AnyUrl = Field("https://api.github.com/users/github/repos", const=True)
+    events_url: str = Field(
+        "https://api.github.com/users/github/events{/privacy}", const=True
+    )
+    received_events_url: AnyUrl = Field(
+        "https://api.github.com/users/github/received_events", const=True
+    )
+    type: str = Field("Organization", const=True)
+    site_admin: bool = Field(False, const=True)
 
 
 class InstallationLite(GhWebhooksModel):
@@ -1787,41 +2008,133 @@ class Permissions2(GhWebhooksModel):
     class Config:
         pass
 
-    actions: Optional[Actions] = None
-    administration: Optional[Actions] = None
-    checks: Optional[Actions] = None
+    actions: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token for GitHub Actions workflows, workflow runs, and artifacts.",
+    )
+    administration: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token for repository creation, deletion, settings, teams, and collaborators creation.",
+    )
+    blocking: Optional[Actions] = None
+    checks: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token for checks on code.",
+    )
     content_references: Optional[Actions] = None
-    contents: Optional[Actions] = None
-    deployments: Optional[Actions] = None
+    contents: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token for repository contents, commits, branches, downloads, releases, and merges.",
+    )
+    deployments: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token for deployments and deployment statuses.",
+    )
     discussions: Optional[Actions] = None
     emails: Optional[Actions] = None
-    environments: Optional[Actions] = None
-    issues: Optional[Actions] = None
-    members: Optional[Actions] = None
-    metadata: Optional[Actions] = None
-    organization_administration: Optional[Actions] = None
+    environments: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token for managing repository environments.",
+    )
+    issues: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token for issues and related comments, assignees, labels, and milestones.",
+    )
+    members: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token for organization teams and members.",
+    )
+    merge_queues: Optional[Actions] = None
+    metadata: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token to search repositories, list collaborators, and access repository metadata.",
+    )
+    organization_administration: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token to manage access to an organization.",
+    )
     organization_events: Optional[Actions] = None
-    organization_hooks: Optional[Actions] = None
-    organization_packages: Optional[Actions] = None
-    organization_plan: Optional[Actions] = None
-    organization_projects: Optional[Actions] = None
-    organization_secrets: Optional[Actions] = None
-    organization_self_hosted_runners: Optional[Actions] = None
-    organization_user_blocking: Optional[Actions] = None
-    packages: Optional[Actions] = None
-    pages: Optional[Actions] = None
-    pull_requests: Optional[Actions] = None
-    repository_hooks: Optional[Actions] = None
-    repository_projects: Optional[Actions] = None
-    secret_scanning_alerts: Optional[Actions] = None
-    secrets: Optional[Actions] = None
-    security_events: Optional[Actions] = None
+    organization_hooks: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token to manage the post-receive hooks for an organization.",
+    )
+    organization_packages: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token for organization packages published to GitHub Packages.",
+    )
+    organization_plan: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token for viewing an organization's plan.",
+    )
+    organization_projects: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token to manage organization projects and projects beta (where available).",
+    )
+    organization_secrets: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token to manage organization secrets.",
+    )
+    organization_self_hosted_runners: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token to view and manage GitHub Actions self-hosted runners available to an organization.",
+    )
+    organization_user_blocking: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token to view and manage users blocked by the organization.",
+    )
+    packages: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token for packages published to GitHub Packages.",
+    )
+    pages: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token to retrieve Pages statuses, configuration, and builds, as well as create new builds.",
+    )
+    pull_requests: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token for pull requests and related comments, assignees, labels, milestones, and merges.",
+    )
+    repository_hooks: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token to manage the post-receive hooks for a repository.",
+    )
+    repository_projects: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token to manage repository projects, columns, and cards.",
+    )
+    secret_scanning_alerts: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token to view and manage secret scanning alerts.",
+    )
+    secrets: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token to manage repository secrets.",
+    )
+    security_events: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token to view and manage security events like code scanning alerts.",
+    )
     security_scanning_alert: Optional[Actions] = None
-    single_file: Optional[Actions] = None
-    statuses: Optional[Actions] = None
-    team_discussions: Optional[Actions] = None
-    vulnerability_alerts: Optional[Actions] = None
-    workflows: Optional[Actions] = None
+    single_file: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token to manage just a single file.",
+    )
+    statuses: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token for commit statuses.",
+    )
+    team_discussions: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token to manage team discussions and related comments.",
+    )
+    vulnerability_alerts: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token to manage Dependabot alerts.",
+    )
+    workflows: Optional[Actions] = Field(
+        None,
+        description="The level of permission granted to the access token to update GitHub Actions workflow files.",
+    )
 
 
 class Event1(str, Enum):
@@ -1830,7 +2143,6 @@ class Event1(str, Enum):
     check_suite = "check_suite"
     code_scanning_alert = "code_scanning_alert"
     commit_comment = "commit_comment"
-    content_reference = "content_reference"
     create = "create"
     delete = "delete"
     deployment = "deployment"
@@ -1846,6 +2158,7 @@ class Event1(str, Enum):
     label = "label"
     member = "member"
     membership = "membership"
+    merge_group = "merge_group"
     merge_queue_entry = "merge_queue_entry"
     milestone = "milestone"
     organization = "organization"
@@ -1867,6 +2180,7 @@ class Event1(str, Enum):
     repository_dispatch = "repository_dispatch"
     secret_scanning_alert = "secret_scanning_alert"
     secret_scanning_alert_location = "secret_scanning_alert_location"
+    security_and_analysis = "security_and_analysis"
     star = "star"
     status = "status"
     team = "team"
@@ -1877,7 +2191,7 @@ class Event1(str, Enum):
     workflow_run = "workflow_run"
 
 
-class PullRequest9(GhWebhooksModel):
+class PullRequest11(GhWebhooksModel):
     class Config:
         pass
 
@@ -1885,7 +2199,7 @@ class PullRequest9(GhWebhooksModel):
     html_url: Optional[AnyUrl] = None
     diff_url: Optional[AnyUrl] = None
     patch_url: Optional[AnyUrl] = None
-    merged_at: Optional[Optional[str]] = None
+    merged_at: Optional[datetime] = None
 
 
 class Label(GhWebhooksModel):
@@ -1896,7 +2210,7 @@ class Label(GhWebhooksModel):
     node_id: Optional[str] = None
     url: Optional[AnyUrl] = Field(None, description="URL for the label")
     name: Optional[str] = Field(None, description="The name of the label.")
-    description: Optional[Optional[str]] = None
+    description: Optional[str] = None
     color: Optional[str] = Field(
         None,
         description="6-character hex code, without the leading #, identifying the color",
@@ -1911,7 +2225,7 @@ class License(GhWebhooksModel):
     key: Optional[str] = None
     name: Optional[str] = None
     spdx_id: Optional[str] = None
-    url: Optional[Optional[str]] = None
+    url: Optional[AnyUrl] = None
     node_id: Optional[str] = None
 
 
@@ -1922,7 +2236,7 @@ class Link(GhWebhooksModel):
     href: Optional[str] = None
 
 
-class Account(GhWebhooksModel):
+class Account1(GhWebhooksModel):
     class Config:
         pass
 
@@ -1933,7 +2247,7 @@ class Account(GhWebhooksModel):
     organization_billing_email: Optional[str] = None
 
 
-class Plan(GhWebhooksModel):
+class Plan1(GhWebhooksModel):
     class Config:
         pass
 
@@ -1944,7 +2258,7 @@ class Plan(GhWebhooksModel):
     yearly_price_in_cents: Optional[int] = None
     price_model: Optional[str] = None
     has_free_trial: Optional[bool] = None
-    unit_name: Optional[Optional[str]] = None
+    unit_name: Optional[str] = None
     bullets: Optional[List[str]] = None
 
 
@@ -1952,13 +2266,13 @@ class MarketplacePurchase(GhWebhooksModel):
     class Config:
         pass
 
-    account: Optional[Account] = None
+    account: Optional[Account1] = None
     billing_cycle: Optional[str] = None
     unit_count: Optional[int] = None
     on_free_trial: Optional[bool] = None
-    free_trial_ends_on: Optional[Any] = None
+    free_trial_ends_on: Optional[datetime] = None
     next_billing_date: Optional[str] = None
-    plan: Optional[Plan] = None
+    plan: Optional[Plan1] = None
 
 
 class Organization(GhWebhooksModel):
@@ -1977,7 +2291,69 @@ class Organization(GhWebhooksModel):
     members_url: Optional[str] = None
     public_members_url: Optional[str] = None
     avatar_url: Optional[AnyUrl] = None
-    description: Optional[Optional[str]] = None
+    description: Optional[str] = None
+
+
+class PackageNpmMetadata(GhWebhooksModel):
+    class Config:
+        pass
+
+    name: Optional[str] = None
+    version: Optional[str] = None
+    npm_user: Optional[str] = None
+    author: Optional[Dict[str, str]] = None
+    bugs: Optional[Dict[str, str]] = None
+    dependencies: Optional[Dict[str, str]] = None
+    dev_dependencies: Optional[Dict[str, str]] = None
+    peer_dependencies: Optional[Dict[str, str]] = None
+    optional_dependencies: Optional[Dict[str, str]] = None
+    description: Optional[str] = None
+    dist: Optional[Dict[str, str]] = None
+    git_head: Optional[str] = None
+    homepage: Optional[str] = None
+    license: Optional[str] = None
+    main: Optional[str] = None
+    repository: Optional[Dict[str, str]] = None
+    scripts: Optional[Dict[str, Any]] = None
+    id: Optional[str] = None
+    node_version: Optional[str] = None
+    npm_version: Optional[str] = None
+    has_shrinkwrap: Optional[bool] = None
+    maintainers: Optional[List[Dict[str, Any]]] = None
+    contributors: Optional[List[Dict[str, Any]]] = None
+    engines: Optional[Dict[str, str]] = None
+    keywords: Optional[List[str]] = None
+    files: Optional[List[str]] = None
+    bin: Optional[Dict[str, Any]] = None
+    man: Optional[Dict[str, Any]] = None
+    directories: Optional[Dict[str, str]] = None
+    os: Optional[List[str]] = None
+    cpu: Optional[List[str]] = None
+    readme: Optional[str] = None
+    installation_command: Optional[str] = None
+    release_id: Optional[int] = None
+    commit_oid: Optional[str] = None
+    published_via_actions: Optional[bool] = None
+    deleted_by_id: Optional[int] = None
+
+
+class ValueItem(GhWebhooksModel):
+    class Config:
+        pass
+
+    url: Optional[str] = None
+    branch: Optional[str] = None
+    commit: Optional[str] = None
+    type: Optional[str] = None
+
+
+class PackageNugetMetadata(GhWebhooksModel):
+    class Config:
+        pass
+
+    id: Optional[Union[str, int]] = None
+    name: Optional[str] = None
+    value: Optional[Union[bool, str, int, ValueItem]] = None
 
 
 class ProjectColumn(GhWebhooksModel):
@@ -2002,7 +2378,7 @@ class ContentType3(str, Enum):
     PullRequest = "PullRequest"
 
 
-class Links6(GhWebhooksModel):
+class Links(GhWebhooksModel):
     class Config:
         pass
 
@@ -2022,7 +2398,27 @@ class Side(str, Enum):
     RIGHT = "RIGHT"
 
 
-class Links7(GhWebhooksModel):
+class SubjectType(str, Enum):
+    line = "line"
+    file = "file"
+
+
+class State19(str, Enum):
+    commented = "commented"
+    changes_requested = "changes_requested"
+    approved = "approved"
+    dismissed = "dismissed"
+
+
+class Links4(GhWebhooksModel):
+    class Config:
+        pass
+
+    html: Optional[Link] = None
+    pull_request: Optional[Link] = None
+
+
+class Links5(GhWebhooksModel):
     class Config:
         pass
 
@@ -2052,6 +2448,15 @@ class Reactions(GhWebhooksModel):
     eyes: Optional[int] = None
 
 
+class ReferencedWorkflow(GhWebhooksModel):
+    class Config:
+        pass
+
+    path: Optional[str] = None
+    sha: Optional[str] = None
+    ref: Optional[str] = None
+
+
 class RepoRef(GhWebhooksModel):
     class Config:
         pass
@@ -2078,8 +2483,186 @@ class Permissions3(GhWebhooksModel):
     triage: Optional[bool] = None
 
 
-class Links8(Links7):
-    pass
+class State22(str, Enum):
+    open = "open"
+    resolved = "resolved"
+
+
+class Resolution1(Enum):
+    false_positive = "false_positive"
+    wont_fix = "wont_fix"
+    revoked = "revoked"
+    used_in_tests = "used_in_tests"
+    NoneType_None = None
+
+
+class Details(GhWebhooksModel):
+    class Config:
+        pass
+
+    path: Optional[str] = Field(
+        None,
+        description="The file path in the repository",
+        examples=["/example/secrets.txt"],
+    )
+    start_line: Optional[float] = Field(
+        None, description="Line number at which the secret starts in the file"
+    )
+    end_line: Optional[float] = Field(
+        None, description="Line number at which the secret ends in the file"
+    )
+    start_column: Optional[float] = Field(
+        None,
+        description="The column at which the secret starts within the start line when the file is interpreted as 8BIT ASCII",
+    )
+    end_column: Optional[float] = Field(
+        None,
+        description="The column at which the secret ends within the end line when the file is interpreted as 8BIT ASCII",
+    )
+    blob_sha: Optional[str] = Field(
+        None,
+        description="SHA-1 hash ID of the associated blob",
+        examples=["af5626b4a114abcb82d63db7c8082c3c4756e51b"],
+    )
+    blob_url: Optional[str] = Field(
+        None, description="The API URL to get the associated blob resource"
+    )
+    commit_sha: Optional[str] = Field(
+        None,
+        description="SHA-1 hash ID of the associated commit",
+        examples=["af5626b4a114abcb82d63db7c8082c3c4756e51b"],
+    )
+    commit_url: Optional[str] = Field(
+        None, description="The API URL to get the associated commit resource"
+    )
+
+
+class SecretScanningLocationItem(GhWebhooksModel):
+    class Config:
+        pass
+
+    type: Optional[Literal["commit"]] = Field(
+        None,
+        description="The location type. Because secrets may be found in different types of resources (ie. code, comments, issues), this field identifies the type of resource where the secret was found.",
+    )
+    details: Optional[Details] = Field(
+        None,
+        description="Represents a 'commit' secret scanning location type. This location type shows that a secret was detected inside a commit to a repository.",
+        title="Secret Scanning Location Commit",
+    )
+
+
+class Details1(GhWebhooksModel):
+    class Config:
+        pass
+
+    issue_title_url: Optional[AnyUrl] = Field(
+        None,
+        description="The API URL to get the issue where the secret was detected.",
+        examples=["https://api.github.com/repos/octocat/Hello-World/issues/1347"],
+    )
+
+
+class SecretScanningLocationItem1(GhWebhooksModel):
+    class Config:
+        pass
+
+    type: Optional[Literal["issue_title"]] = Field(
+        None,
+        description="The location type. Because secrets may be found in different types of resources (ie. code, comments, issues), this field identifies the type of resource where the secret was found.",
+    )
+    details: Optional[Details1] = Field(
+        None,
+        description="Represents an 'issue_title' secret scanning location type. This location type shows that a secret was detected in the title of an issue.",
+        title="Secret Scanning Location Issue Title",
+    )
+
+
+class Details2(GhWebhooksModel):
+    class Config:
+        pass
+
+    issue_body_url: Optional[AnyUrl] = Field(
+        None,
+        description="The API URL to get the issue where the secret was detected.",
+        examples=["https://api.github.com/repos/octocat/Hello-World/issues/1347"],
+    )
+
+
+class SecretScanningLocationItem2(GhWebhooksModel):
+    class Config:
+        pass
+
+    type: Optional[Literal["issue_body"]] = Field(
+        None,
+        description="The location type. Because secrets may be found in different types of resources (ie. code, comments, issues), this field identifies the type of resource where the secret was found.",
+    )
+    details: Optional[Details2] = Field(
+        None,
+        description="Represents an 'issue_body' secret scanning location type. This location type shows that a secret was detected in the body of an issue.",
+        title="Secret Scanning Location Issue Body",
+    )
+
+
+class Details3(GhWebhooksModel):
+    class Config:
+        pass
+
+    issue_comment_url: Optional[AnyUrl] = Field(
+        None,
+        description="The API URL to get the issue comment where the secret was detected.",
+        examples=[
+            "https://api.github.com/repos/octocat/Hello-World/issues/comments/1081119451"
+        ],
+    )
+
+
+class SecretScanningLocationItem3(GhWebhooksModel):
+    class Config:
+        pass
+
+    type: Optional[Literal["issue_comment"]] = Field(
+        None,
+        description="The location type. Because secrets may be found in different types of resources (ie. code, comments, issues), this field identifies the type of resource where the secret was found.",
+    )
+    details: Optional[Details3] = Field(
+        None,
+        description="Represents an 'issue_comment' secret scanning location type. This location type shows that a secret was detected in a comment on an issue.",
+        title="Secret Scanning Location Issue Comment",
+    )
+
+
+class SecretScanningLocation(GhWebhooksModel):
+    __root__: Optional[
+        Union[
+            SecretScanningLocationItem,
+            SecretScanningLocationItem1,
+            SecretScanningLocationItem2,
+            SecretScanningLocationItem3,
+        ]
+    ] = Field(None, title="Secret Scanning Location")
+
+
+class SecurityAdvisoryCvss(GhWebhooksModel):
+    class Config:
+        pass
+
+    score: Optional[confloat(ge=0.0, le=10.0)] = Field(
+        None, description="The overall CVSS score of the advisory."
+    )
+    vector_string: Optional[str] = Field(
+        None, description="The full CVSS vector string for the advisory."
+    )
+
+
+class SecurityAdvisoryCwes(GhWebhooksModel):
+    class Config:
+        pass
+
+    cwe_id: Optional[str] = Field(None, description="The unique CWE ID.")
+    name: Optional[str] = Field(
+        None, description="The short, plain text name of the CWE."
+    )
 
 
 class SponsorshipTier(GhWebhooksModel):
@@ -2087,7 +2670,7 @@ class SponsorshipTier(GhWebhooksModel):
         pass
 
     node_id: Optional[str] = None
-    created_at: Optional[str] = None
+    created_at: Optional[datetime] = None
     description: Optional[str] = None
     monthly_price_in_cents: Optional[int] = None
     monthly_price_in_dollars: Optional[int] = None
@@ -2102,6 +2685,11 @@ class Privacy1(str, Enum):
     secret = "secret"
 
 
+class NotificationSetting(str, Enum):
+    notifications_enabled = "notifications_enabled"
+    notifications_disabled = "notifications_disabled"
+
+
 class Parent1(GhWebhooksModel):
     class Config:
         pass
@@ -2110,9 +2698,7 @@ class Parent1(GhWebhooksModel):
     id: Optional[int] = Field(None, description="Unique identifier of the team")
     node_id: Optional[str] = None
     slug: Optional[str] = None
-    description: Optional[Optional[str]] = Field(
-        None, description="Description of the team"
-    )
+    description: Optional[str] = Field(None, description="Description of the team")
     privacy: Optional[Privacy1] = None
     url: Optional[AnyUrl] = Field(None, description="URL for the team")
     html_url: Optional[AnyUrl] = None
@@ -2120,6 +2706,10 @@ class Parent1(GhWebhooksModel):
     repositories_url: Optional[AnyUrl] = None
     permission: Optional[str] = Field(
         None, description="Permission that the team will have for its repositories"
+    )
+    notification_setting: Optional[NotificationSetting] = Field(
+        None,
+        description="Whether team members will receive notifications when their team is @mentioned",
     )
 
 
@@ -2131,9 +2721,7 @@ class Team(GhWebhooksModel):
     id: Optional[int] = Field(None, description="Unique identifier of the team")
     node_id: Optional[str] = None
     slug: Optional[str] = None
-    description: Optional[Optional[str]] = Field(
-        None, description="Description of the team"
-    )
+    description: Optional[str] = Field(None, description="Description of the team")
     privacy: Optional[Privacy1] = None
     url: Optional[AnyUrl] = Field(None, description="URL for the team")
     html_url: Optional[AnyUrl] = None
@@ -2143,12 +2731,10 @@ class Team(GhWebhooksModel):
         None, description="Permission that the team will have for its repositories"
     )
     parent: Optional[Parent1] = None
-
-
-class Type(str, Enum):
-    Bot = "Bot"
-    User = "User"
-    Organization = "Organization"
+    notification_setting: Optional[NotificationSetting] = Field(
+        None,
+        description="Whether team members will receive notifications when their team is @mentioned",
+    )
 
 
 class User(GhWebhooksModel):
@@ -2159,7 +2745,7 @@ class User(GhWebhooksModel):
     id: Optional[int] = None
     node_id: Optional[str] = None
     name: Optional[str] = None
-    email: Optional[Optional[str]] = None
+    email: Optional[str] = None
     avatar_url: Optional[AnyUrl] = None
     gravatar_id: Optional[str] = None
     url: Optional[AnyUrl] = None
@@ -2204,6 +2790,7 @@ class WebhookEvent(str, Enum):
     package = "package"
     page_build = "page_build"
     project = "project"
+    projects_v2_item = "projects_v2_item"
     project_card = "project_card"
     project_column = "project_column"
     public = "public"
@@ -2218,6 +2805,8 @@ class WebhookEvent(str, Enum):
     repository_import = "repository_import"
     repository_vulnerability_alert = "repository_vulnerability_alert"
     secret_scanning_alert = "secret_scanning_alert"
+    secret_scanning_alert_location = "secret_scanning_alert_location"
+    security_and_analysis = "security_and_analysis"
     star = "star"
     status = "status"
     team = "team"
@@ -2241,7 +2830,7 @@ class Conclusion15(Enum):
     NoneType_None = None
 
 
-class Head6(GhWebhooksModel):
+class Head(GhWebhooksModel):
     class Config:
         pass
 
@@ -2250,22 +2839,22 @@ class Head6(GhWebhooksModel):
     repo: Optional[RepoRef] = None
 
 
-class Base7(Head6):
+class Base7(Head):
     pass
 
 
-class PullRequest10(GhWebhooksModel):
+class PullRequest12(GhWebhooksModel):
     class Config:
         pass
 
     url: Optional[AnyUrl] = None
     id: Optional[float] = None
     number: Optional[float] = None
-    head: Optional[Head6] = None
+    head: Optional[Head] = None
     base: Optional[Base7] = None
 
 
-class Status12(str, Enum):
+class Status14(str, Enum):
     requested = "requested"
     in_progress = "in_progress"
     completed = "completed"
@@ -2287,8 +2876,8 @@ class WorkflowStepCompleted(GhWebhooksModel):
     status: Optional[Literal["completed"]] = None
     conclusion: Optional[Conclusion17] = None
     number: Optional[int] = None
-    started_at: Optional[str] = None
-    completed_at: Optional[str] = None
+    started_at: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
 
 
 class WorkflowStepInProgress(GhWebhooksModel):
@@ -2297,16 +2886,28 @@ class WorkflowStepInProgress(GhWebhooksModel):
 
     name: Optional[str] = None
     status: Optional[Literal["in_progress"]] = None
-    conclusion: Optional[Any] = None
+    conclusion: None = None
     number: Optional[int] = None
-    started_at: Optional[str] = None
-    completed_at: Optional[Any] = None
+    started_at: Optional[datetime] = None
+    completed_at: None = None
+
+
+class WorkflowStepQueued(GhWebhooksModel):
+    class Config:
+        pass
+
+    name: Optional[str] = None
+    status: Optional[Literal["queued"]] = None
+    conclusion: None = None
+    number: Optional[int] = None
+    started_at: None = None
+    completed_at: None = None
 
 
 class WorkflowStep(GhWebhooksModel):
-    __root__: Optional[Union[WorkflowStepInProgress, WorkflowStepCompleted]] = Field(
-        None, title="Workflow Step"
-    )
+    __root__: Optional[
+        Union[WorkflowStepInProgress, WorkflowStepQueued, WorkflowStepCompleted]
+    ] = Field(None, title="Workflow Step")
 
 
 class Workflow(GhWebhooksModel):
@@ -2325,6 +2926,124 @@ class Workflow(GhWebhooksModel):
     url: Optional[AnyUrl] = None
 
 
+class AdminEnforced(GhWebhooksModel):
+    class Config:
+        pass
+
+    from_: Optional[BranchProtectionRuleBoolean] = Field(None, alias="from")
+
+
+class AllowDeletionsEnforcementLevel(GhWebhooksModel):
+    class Config:
+        pass
+
+    from_: Optional[BranchProtectionRuleEnforcementLevel] = Field(None, alias="from")
+
+
+class AllowForcePushesEnforcementLevel(GhWebhooksModel):
+    class Config:
+        pass
+
+    from_: Optional[BranchProtectionRuleEnforcementLevel] = Field(None, alias="from")
+
+
+class AuthorizedActorsOnly(AdminEnforced):
+    pass
+
+
+class AuthorizedActorNames(GhWebhooksModel):
+    class Config:
+        pass
+
+    from_: Optional[BranchProtectionRuleArray] = Field(None, alias="from")
+
+
+class AuthorizedDismissalActorsOnly(GhWebhooksModel):
+    class Config:
+        pass
+
+    from_: Optional[BranchProtectionRuleBoolean] = Field(None, alias="from")
+
+
+class DismissStaleReviewsOnPush(AdminEnforced):
+    pass
+
+
+class PullRequestReviewsEnforcementLevel(AllowForcePushesEnforcementLevel):
+    pass
+
+
+class RequireCodeOwnerReview(AdminEnforced):
+    pass
+
+
+class RequiredApprovingReviewCount(GhWebhooksModel):
+    class Config:
+        pass
+
+    from_: Optional[BranchProtectionRuleNumber] = Field(None, alias="from")
+
+
+class RequiredConversationResolutionLevel(AllowForcePushesEnforcementLevel):
+    pass
+
+
+class RequiredDeploymentsEnforcementLevel(AllowForcePushesEnforcementLevel):
+    pass
+
+
+class RequiredStatusChecks(AuthorizedActorNames):
+    pass
+
+
+class RequiredStatusChecksEnforcementLevel(AllowForcePushesEnforcementLevel):
+    pass
+
+
+class SignatureRequirementEnforcementLevel(AllowForcePushesEnforcementLevel):
+    pass
+
+
+class LinearHistoryRequirementEnforcementLevel(AllowForcePushesEnforcementLevel):
+    pass
+
+
+class Changes(GhWebhooksModel):
+    class Config:
+        pass
+
+    admin_enforced: Optional[AdminEnforced] = None
+    allow_deletions_enforcement_level: Optional[AllowDeletionsEnforcementLevel] = None
+    allow_force_pushes_enforcement_level: Optional[
+        AllowForcePushesEnforcementLevel
+    ] = None
+    authorized_actors_only: Optional[AuthorizedActorsOnly] = None
+    authorized_actor_names: Optional[AuthorizedActorNames] = None
+    authorized_dismissal_actors_only: Optional[AuthorizedDismissalActorsOnly] = None
+    dismiss_stale_reviews_on_push: Optional[DismissStaleReviewsOnPush] = None
+    pull_request_reviews_enforcement_level: Optional[
+        PullRequestReviewsEnforcementLevel
+    ] = None
+    require_code_owner_review: Optional[RequireCodeOwnerReview] = None
+    required_approving_review_count: Optional[RequiredApprovingReviewCount] = None
+    required_conversation_resolution_level: Optional[
+        RequiredConversationResolutionLevel
+    ] = None
+    required_deployments_enforcement_level: Optional[
+        RequiredDeploymentsEnforcementLevel
+    ] = None
+    required_status_checks: Optional[RequiredStatusChecks] = None
+    required_status_checks_enforcement_level: Optional[
+        RequiredStatusChecksEnforcementLevel
+    ] = None
+    signature_requirement_enforcement_level: Optional[
+        SignatureRequirementEnforcementLevel
+    ] = None
+    linear_history_requirement_enforcement_level: Optional[
+        LinearHistoryRequirementEnforcementLevel
+    ] = None
+
+
 class Alert(GhWebhooksModel):
     class Config:
         pass
@@ -2334,15 +3053,17 @@ class Alert(GhWebhooksModel):
         None,
         description="The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`",
     )
-    url: Optional[AnyUrl] = None
+    url: Optional[AnyUrl] = Field(
+        None, description="The REST API URL of the alert resource."
+    )
     html_url: Optional[AnyUrl] = Field(
         None, description="The GitHub URL of the alert resource."
     )
     instances: Optional[List[AlertInstance]] = None
     most_recent_instance: Optional[AlertInstance] = None
     state: Optional[State] = Field(None, description="State of a code scanning alert.")
-    dismissed_by: Optional[Optional[User]] = None
-    dismissed_at: Optional[Optional[str]] = Field(
+    dismissed_by: Optional[User] = None
+    dismissed_at: Optional[datetime] = Field(
         None,
         description="The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.",
     )
@@ -2367,7 +3088,9 @@ class Alert1(GhWebhooksModel):
         None,
         description="The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`",
     )
-    url: Optional[AnyUrl] = None
+    url: Optional[AnyUrl] = Field(
+        None, description="The REST API URL of the alert resource."
+    )
     html_url: Optional[AnyUrl] = Field(
         None, description="The GitHub URL of the alert resource."
     )
@@ -2402,24 +3125,26 @@ class Alert2(GhWebhooksModel):
         None,
         description="The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`",
     )
-    url: Optional[AnyUrl] = None
+    url: Optional[AnyUrl] = Field(
+        None, description="The REST API URL of the alert resource."
+    )
     html_url: Optional[AnyUrl] = Field(
         None, description="The GitHub URL of the alert resource."
     )
     instances: Optional[List[Instance1]] = None
     most_recent_instance: Optional[AlertInstance] = None
     state: Optional[State1] = Field(None, description="State of a code scanning alert.")
-    dismissed_by: Optional[Any] = None
-    dismissed_at: Optional[Any] = Field(
+    dismissed_by: None = None
+    dismissed_at: None = Field(
         None,
         description="The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.",
     )
-    dismissed_reason: Optional[Any] = Field(
+    dismissed_reason: None = Field(
         None,
         description="The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`.",
     )
     rule: Optional[Rule2] = None
-    tool: Optional[Tool2] = None
+    tool: Optional[Tool1] = None
 
 
 class Instance2(AlertInstance):
@@ -2435,7 +3160,9 @@ class Alert3(GhWebhooksModel):
         None,
         description="The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`",
     )
-    url: Optional[AnyUrl] = None
+    url: Optional[AnyUrl] = Field(
+        None, description="The REST API URL of the alert resource."
+    )
     html_url: Optional[AnyUrl] = Field(
         None, description="The GitHub URL of the alert resource."
     )
@@ -2443,8 +3170,8 @@ class Alert3(GhWebhooksModel):
     state: Optional[Literal["fixed"]] = Field(
         None, description="State of a code scanning alert."
     )
-    dismissed_by: Optional[Optional[User]] = None
-    dismissed_at: Optional[Optional[str]] = Field(
+    dismissed_by: Optional[User] = None
+    dismissed_at: Optional[datetime] = Field(
         None,
         description="The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.",
     )
@@ -2453,7 +3180,7 @@ class Alert3(GhWebhooksModel):
         description="The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`.",
     )
     rule: Optional[Rule3] = None
-    tool: Optional[Tool3] = None
+    tool: Optional[Tool1] = None
     most_recent_instance: Optional[AlertInstance] = None
     instances_url: Optional[AnyUrl] = None
 
@@ -2471,28 +3198,26 @@ class Alert4(GhWebhooksModel):
         None,
         description="The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`",
     )
-    url: Optional[AnyUrl] = None
+    url: Optional[AnyUrl] = Field(
+        None, description="The REST API URL of the alert resource."
+    )
     html_url: Optional[AnyUrl] = Field(
         None, description="The GitHub URL of the alert resource."
     )
     instances: Optional[List[Instance3]] = None
     most_recent_instance: Optional[AlertInstance] = None
     state: Optional[State] = Field(None, description="State of a code scanning alert.")
-    dismissed_by: Optional[Any] = None
-    dismissed_at: Optional[Any] = Field(
+    dismissed_by: None = None
+    dismissed_at: None = Field(
         None,
         description="The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.",
     )
-    dismissed_reason: Optional[Any] = Field(
+    dismissed_reason: None = Field(
         None,
         description="The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`.",
     )
     rule: Optional[Rule4] = None
-    tool: Optional[Tool4] = None
-
-
-class Instance4(Instance3):
-    pass
+    tool: Optional[Tool1] = None
 
 
 class Alert5(GhWebhooksModel):
@@ -2504,21 +3229,23 @@ class Alert5(GhWebhooksModel):
         None,
         description="The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`",
     )
-    url: Optional[AnyUrl] = None
+    url: Optional[AnyUrl] = Field(
+        None, description="The REST API URL of the alert resource."
+    )
     html_url: Optional[AnyUrl] = Field(
         None, description="The GitHub URL of the alert resource."
     )
-    instances: Optional[List[Instance4]] = None
+    instances: Optional[List[Instance3]] = None
     most_recent_instance: Optional[AlertInstance] = None
     state: Optional[Literal["open"]] = Field(
         None, description="State of a code scanning alert."
     )
-    dismissed_by: Optional[Any] = None
-    dismissed_at: Optional[Any] = Field(
+    dismissed_by: None = None
+    dismissed_at: None = Field(
         None,
         description="The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.",
     )
-    dismissed_reason: Optional[Any] = Field(
+    dismissed_reason: None = Field(
         None,
         description="The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`.",
     )
@@ -2537,21 +3264,21 @@ class Comment(GhWebhooksModel):
         None, description="The node ID of the commit comment."
     )
     user: Optional[User] = None
-    position: Optional[Optional[int]] = Field(
+    position: Optional[int] = Field(
         None, description="The line index in the diff to which the comment applies."
     )
-    line: Optional[Optional[int]] = Field(
+    line: Optional[int] = Field(
         None,
         description="The line of the blob to which the comment applies. The last line of the range for a multi-line comment",
     )
-    path: Optional[Optional[str]] = Field(
+    path: Optional[str] = Field(
         None, description="The relative path of the file to which the comment applies."
     )
     commit_id: Optional[str] = Field(
         None, description="The SHA of the commit to which the comment applies."
     )
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
     author_association: Optional[AuthorAssociation] = None
     body: Optional[str] = Field(None, description="The text of the comment.")
 
@@ -2563,7 +3290,7 @@ class Answer(GhWebhooksModel):
     id: Optional[int] = None
     node_id: Optional[str] = None
     html_url: Optional[str] = None
-    parent_id: Optional[Any] = None
+    parent_id: None = None
     child_comment_count: Optional[int] = None
     repository_url: Optional[str] = None
     discussion_id: Optional[int] = None
@@ -2585,24 +3312,16 @@ class Comment1(GhWebhooksModel):
     id: Optional[int] = None
     node_id: Optional[str] = None
     html_url: Optional[str] = None
-    parent_id: Optional[Optional[int]] = None
+    parent_id: Optional[int] = None
     child_comment_count: Optional[int] = None
     repository_url: Optional[str] = None
     discussion_id: Optional[int] = None
     author_association: Optional[AuthorAssociation] = None
     user: Optional[User] = None
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
-    body: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    body: Optional[str] = Field(None, description="The main text of the comment.")
     reactions: Optional[Reactions] = None
-
-
-class Comment2(Comment1):
-    pass
-
-
-class Comment3(Comment1):
-    pass
 
 
 class GithubAppAuthorizationRevoked(GhWebhooksModel):
@@ -2621,7 +3340,7 @@ class MarketplacePurchaseModel(MarketplacePurchase):
     class Config:
         pass
 
-    next_billing_date: Optional[str] = None
+    next_billing_date: Optional[datetime] = None
 
 
 class MarketplacePurchaseCancelled(GhWebhooksModel):
@@ -2629,14 +3348,14 @@ class MarketplacePurchaseCancelled(GhWebhooksModel):
         pass
 
     action: Optional[Literal["cancelled"]] = None
-    effective_date: Optional[str] = None
+    effective_date: Optional[datetime] = None
     sender: Optional[Sender] = None
     marketplace_purchase: Optional[MarketplacePurchaseModel] = None
     previous_marketplace_purchase: Optional[MarketplacePurchase] = None
 
 
 class MarketplacePurchase1(MarketplacePurchase):
-    next_billing_date: Optional[str] = None
+    next_billing_date: Optional[datetime] = None
 
 
 class MarketplacePurchaseChanged(GhWebhooksModel):
@@ -2644,14 +3363,10 @@ class MarketplacePurchaseChanged(GhWebhooksModel):
         pass
 
     action: Optional[Literal["changed"]] = None
-    effective_date: Optional[str] = None
-    sender: Optional[Sender1] = None
+    effective_date: Optional[datetime] = None
+    sender: Optional[Sender] = None
     marketplace_purchase: Optional[MarketplacePurchase1] = None
     previous_marketplace_purchase: Optional[MarketplacePurchase] = None
-
-
-class MarketplacePurchase2(MarketplacePurchase1):
-    pass
 
 
 class MarketplacePurchasePendingChange(GhWebhooksModel):
@@ -2659,14 +3374,10 @@ class MarketplacePurchasePendingChange(GhWebhooksModel):
         pass
 
     action: Optional[Literal["pending_change"]] = None
-    effective_date: Optional[str] = None
-    sender: Optional[Sender2] = None
-    marketplace_purchase: Optional[MarketplacePurchase2] = None
+    effective_date: Optional[datetime] = None
+    sender: Optional[Sender] = None
+    marketplace_purchase: Optional[MarketplacePurchase1] = None
     previous_marketplace_purchase: Optional[MarketplacePurchase] = None
-
-
-class MarketplacePurchase3(MarketplacePurchase1):
-    pass
 
 
 class MarketplacePurchasePendingChangeCancelled(GhWebhooksModel):
@@ -2674,14 +3385,10 @@ class MarketplacePurchasePendingChangeCancelled(GhWebhooksModel):
         pass
 
     action: Optional[Literal["pending_change_cancelled"]] = None
-    effective_date: Optional[str] = None
-    sender: Optional[Sender3] = None
-    marketplace_purchase: Optional[MarketplacePurchase3] = None
+    effective_date: Optional[datetime] = None
+    sender: Optional[Sender] = None
+    marketplace_purchase: Optional[MarketplacePurchase1] = None
     previous_marketplace_purchase: Optional[MarketplacePurchase] = None
-
-
-class MarketplacePurchase4(MarketplacePurchase1):
-    pass
 
 
 class MarketplacePurchasePurchased(GhWebhooksModel):
@@ -2689,9 +3396,9 @@ class MarketplacePurchasePurchased(GhWebhooksModel):
         pass
 
     action: Optional[Literal["purchased"]] = None
-    effective_date: Optional[str] = None
-    sender: Optional[Sender4] = None
-    marketplace_purchase: Optional[MarketplacePurchase4] = None
+    effective_date: Optional[datetime] = None
+    sender: Optional[Sender] = None
+    marketplace_purchase: Optional[MarketplacePurchase1] = None
     previous_marketplace_purchase: Optional[MarketplacePurchase] = None
 
 
@@ -2762,9 +3469,11 @@ class Hook(GhWebhooksModel):
     name: Optional[str] = None
     active: Optional[bool] = None
     events: Optional[WebhookEvents] = None
-    config: Optional[Config] = None
-    updated_at: Optional[str] = None
-    created_at: Optional[str] = None
+    config: Optional[Config] = Field(
+        None, description="Configuration object of the webhook"
+    )
+    updated_at: Optional[datetime] = None
+    created_at: Optional[datetime] = None
 
 
 class OrgBlockBlocked(GhWebhooksModel):
@@ -2804,11 +3513,11 @@ class Invitation(GhWebhooksModel):
     id: Optional[float] = None
     node_id: Optional[str] = None
     login: Optional[str] = None
-    email: Optional[Optional[str]] = None
+    email: Optional[str] = None
     role: Optional[str] = None
     created_at: Optional[datetime] = None
-    failed_at: Optional[Optional[datetime]] = None
-    failed_reason: Optional[Optional[str]] = None
+    failed_at: Optional[datetime] = None
+    failed_reason: Optional[str] = None
     inviter: Optional[User] = None
     team_count: Optional[float] = None
     invitation_teams_url: Optional[AnyUrl] = None
@@ -2829,6 +3538,17 @@ class OrganizationMemberInvited(GhWebhooksModel):
     organization: Optional[Organization] = None
 
 
+class OrganizationRenamed(GhWebhooksModel):
+    class Config:
+        pass
+
+    changes: Optional[Changes14] = None
+    action: Optional[Literal["renamed"]] = None
+    sender: Optional[User] = None
+    installation: Optional[InstallationLite] = None
+    organization: Optional[Organization] = None
+
+
 class Release(GhWebhooksModel):
     class Config:
         pass
@@ -2842,119 +3562,8 @@ class Release(GhWebhooksModel):
     draft: Optional[bool] = None
     author: Optional[User] = None
     prerelease: Optional[bool] = None
-    created_at: Optional[str] = None
-    published_at: Optional[str] = None
-
-
-class PackageVersion(GhWebhooksModel):
-    class Config:
-        pass
-
-    id: Optional[int] = None
-    version: Optional[str] = None
-    summary: Optional[str] = None
-    name: Optional[str] = None
-    description: Optional[str] = None
-    body: Optional[str] = None
-    body_html: Optional[str] = None
-    release: Optional[Release] = None
-    manifest: Optional[str] = None
-    html_url: Optional[AnyUrl] = None
-    tag_name: Optional[str] = None
-    target_commitish: Optional[str] = None
-    target_oid: Optional[str] = None
-    draft: Optional[bool] = None
-    prerelease: Optional[bool] = None
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
-    metadata: Optional[List] = None
-    docker_metadata: Optional[List] = None
-    package_files: Optional[List[PackageFile]] = None
-    author: Optional[User] = None
-    source_url: Optional[str] = None
-    installation_command: Optional[str] = None
-
-
-class Package(GhWebhooksModel):
-    class Config:
-        pass
-
-    id: Optional[int] = None
-    name: Optional[str] = None
-    namespace: Optional[str] = None
-    description: Optional[Optional[str]] = None
-    ecosystem: Optional[str] = None
-    package_type: Optional[str] = None
-    html_url: Optional[AnyUrl] = None
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
-    owner: Optional[User] = None
-    package_version: Optional[PackageVersion] = None
-    registry: Optional[Registry] = None
-
-
-class Release1(GhWebhooksModel):
-    class Config:
-        pass
-
-    url: Optional[AnyUrl] = None
-    html_url: Optional[AnyUrl] = None
-    id: Optional[int] = None
-    tag_name: Optional[str] = None
-    target_commitish: Optional[str] = None
-    name: Optional[str] = None
-    draft: Optional[bool] = None
-    author: Optional[User] = None
-    prerelease: Optional[bool] = None
-    created_at: Optional[str] = None
-    published_at: Optional[str] = None
-
-
-class PackageVersion1(GhWebhooksModel):
-    class Config:
-        pass
-
-    id: Optional[int] = None
-    version: Optional[str] = None
-    summary: Optional[str] = None
-    name: Optional[str] = None
-    description: Optional[str] = None
-    body: Optional[str] = None
-    body_html: Optional[str] = None
-    release: Optional[Release1] = None
-    manifest: Optional[str] = None
-    html_url: Optional[AnyUrl] = None
-    tag_name: Optional[str] = None
-    target_commitish: Optional[str] = None
-    target_oid: Optional[str] = None
-    draft: Optional[bool] = None
-    prerelease: Optional[bool] = None
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
-    metadata: Optional[List] = None
-    docker_metadata: Optional[List] = None
-    package_files: Optional[List[PackageFile1]] = None
-    author: Optional[User] = None
-    source_url: Optional[AnyUrl] = None
-    installation_command: Optional[str] = None
-
-
-class Package1(GhWebhooksModel):
-    class Config:
-        pass
-
-    id: Optional[int] = None
-    name: Optional[str] = None
-    namespace: Optional[str] = None
-    description: Optional[Optional[str]] = None
-    ecosystem: Optional[str] = None
-    package_type: Optional[str] = None
-    html_url: Optional[AnyUrl] = None
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
-    owner: Optional[User] = None
-    package_version: Optional[PackageVersion1] = None
-    registry: Optional[Registry1] = None
+    created_at: Optional[datetime] = None
+    published_at: Optional[datetime] = None
 
 
 class Build(GhWebhooksModel):
@@ -2967,15 +3576,15 @@ class Build(GhWebhooksModel):
     pusher: Optional[User] = None
     commit: Optional[str] = None
     duration: Optional[int] = None
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 
 class Hook1(GhWebhooksModel):
     class Config:
         pass
 
-    type: Optional[str] = None
+    type: Optional[Type1] = None
     id: Optional[int] = None
     name: Optional[str] = None
     active: Optional[bool] = None
@@ -2984,93 +3593,16 @@ class Hook1(GhWebhooksModel):
         description="When you register a new GitHub App, GitHub sends a ping event to the **webhook URL** you specified during registration. The event contains the `app_id`, which is required for [authenticating](https://docs.github.com/en/apps/building-integrations/setting-up-and-registering-github-apps/about-authentication-options-for-github-apps) an app.",
     )
     events: Optional[WebhookEvents] = None
-    config: Optional[Config1] = None
-    updated_at: Optional[str] = None
-    created_at: Optional[str] = None
+    config: Optional[Config1] = Field(
+        None, description="Configuration object of the webhook"
+    )
+    updated_at: Optional[datetime] = None
+    created_at: Optional[datetime] = None
     url: Optional[AnyUrl] = None
     test_url: Optional[AnyUrl] = None
     ping_url: Optional[AnyUrl] = None
     deliveries_url: Optional[AnyUrl] = None
     last_response: Optional[LastResponse] = None
-
-
-class Links(GhWebhooksModel):
-    class Config:
-        pass
-
-    html: Optional[Link] = None
-    pull_request: Optional[Link] = None
-
-
-class Review(GhWebhooksModel):
-    class Config:
-        pass
-
-    id: Optional[int] = Field(None, description="Unique identifier of the review")
-    node_id: Optional[str] = None
-    user: Optional[User] = None
-    body: Optional[Optional[str]] = Field(None, description="The text of the review.")
-    commit_id: Optional[str] = Field(None, description="A commit SHA for the review.")
-    submitted_at: Optional[datetime] = None
-    state: Optional[Literal["dismissed"]] = None
-    html_url: Optional[AnyUrl] = None
-    pull_request_url: Optional[AnyUrl] = None
-    author_association: Optional[AuthorAssociation] = None
-    links: Optional[Links] = Field(None, alias="_links")
-
-
-class Links1(Links):
-    pass
-
-
-class Review1(GhWebhooksModel):
-    class Config:
-        pass
-
-    id: Optional[int] = Field(None, description="Unique identifier of the review")
-    node_id: Optional[str] = None
-    user: Optional[User] = None
-    body: Optional[Optional[str]] = Field(None, description="The text of the review.")
-    commit_id: Optional[str] = Field(None, description="A commit SHA for the review.")
-    submitted_at: Optional[datetime] = None
-    state: Optional[str] = None
-    html_url: Optional[AnyUrl] = None
-    pull_request_url: Optional[AnyUrl] = None
-    author_association: Optional[AuthorAssociation] = None
-    links: Optional[Links1] = Field(None, alias="_links")
-
-
-class Links2(Links):
-    pass
-
-
-class Review2(GhWebhooksModel):
-    class Config:
-        pass
-
-    id: Optional[int] = Field(None, description="Unique identifier of the review")
-    node_id: Optional[str] = None
-    user: Optional[User] = None
-    body: Optional[Optional[str]] = Field(None, description="The text of the review.")
-    commit_id: Optional[str] = Field(None, description="A commit SHA for the review.")
-    submitted_at: Optional[datetime] = None
-    state: Optional[str] = None
-    html_url: Optional[AnyUrl] = None
-    pull_request_url: Optional[AnyUrl] = None
-    author_association: Optional[AuthorAssociation] = None
-    links: Optional[Links2] = Field(None, alias="_links")
-
-
-class Links3(Links7):
-    pass
-
-
-class Links4(Links7):
-    pass
-
-
-class Links5(Links7):
-    pass
 
 
 class From1(GhWebhooksModel):
@@ -3087,22 +3619,11 @@ class Owner(GhWebhooksModel):
     from_: Optional[From1] = Field(None, alias="from")
 
 
-class Changes29(GhWebhooksModel):
+class Changes31(GhWebhooksModel):
     class Config:
         pass
 
     owner: Optional[Owner] = None
-
-
-class Alert12(GhWebhooksModel):
-    class Config:
-        pass
-
-    number: Optional[int] = None
-    secret_type: Optional[str] = None
-    resolution: Optional[Resolution] = None
-    resolved_by: Optional[User] = None
-    resolved_at: Optional[str] = None
 
 
 class Sponsorship(GhWebhooksModel):
@@ -3110,7 +3631,7 @@ class Sponsorship(GhWebhooksModel):
         pass
 
     node_id: Optional[str] = None
-    created_at: Optional[str] = None
+    created_at: Optional[datetime] = None
     sponsorable: Optional[User] = None
     sponsor: Optional[User] = None
     privacy_level: Optional[str] = None
@@ -3126,21 +3647,13 @@ class SponsorshipCancelled(GhWebhooksModel):
     sender: Optional[User] = None
 
 
-class Sponsorship1(Sponsorship):
-    pass
-
-
 class SponsorshipCreated(GhWebhooksModel):
     class Config:
         pass
 
     action: Optional[Literal["created"]] = None
-    sponsorship: Optional[Sponsorship1] = None
+    sponsorship: Optional[Sponsorship] = None
     sender: Optional[User] = None
-
-
-class Sponsorship2(Sponsorship):
-    pass
 
 
 class SponsorshipEdited(GhWebhooksModel):
@@ -3148,13 +3661,9 @@ class SponsorshipEdited(GhWebhooksModel):
         pass
 
     action: Optional[Literal["edited"]] = None
-    sponsorship: Optional[Sponsorship2] = None
-    changes: Optional[Changes30] = None
+    sponsorship: Optional[Sponsorship] = None
+    changes: Optional[Changes32] = None
     sender: Optional[User] = None
-
-
-class Sponsorship3(Sponsorship):
-    pass
 
 
 class SponsorshipPendingCancellation(GhWebhooksModel):
@@ -3162,16 +3671,12 @@ class SponsorshipPendingCancellation(GhWebhooksModel):
         pass
 
     action: Optional[Literal["pending_cancellation"]] = None
-    sponsorship: Optional[Sponsorship3] = None
+    sponsorship: Optional[Sponsorship] = None
     effective_date: Optional[str] = Field(
         None,
         description="The `pending_cancellation` and `pending_tier_change` event types will include the date the cancellation or tier change will take effect.",
     )
     sender: Optional[User] = None
-
-
-class Sponsorship4(Sponsorship):
-    pass
 
 
 class Tier(GhWebhooksModel):
@@ -3181,7 +3686,7 @@ class Tier(GhWebhooksModel):
     from_: Optional[SponsorshipTier] = Field(None, alias="from")
 
 
-class Changes31(GhWebhooksModel):
+class Changes33(GhWebhooksModel):
     class Config:
         pass
 
@@ -3193,28 +3698,17 @@ class SponsorshipPendingTierChange(GhWebhooksModel):
         pass
 
     action: Optional[Literal["pending_tier_change"]] = None
-    sponsorship: Optional[Sponsorship4] = None
+    sponsorship: Optional[Sponsorship] = None
     effective_date: Optional[str] = Field(
         None,
         description="The `pending_cancellation` and `pending_tier_change` event types will include the date the cancellation or tier change will take effect.",
     )
-    changes: Optional[Changes31] = None
+    changes: Optional[Changes33] = None
     sender: Optional[User] = None
 
 
-class Sponsorship5(Sponsorship):
+class Changes34(Changes33):
     pass
-
-
-class Tier1(Tier):
-    pass
-
-
-class Changes32(GhWebhooksModel):
-    class Config:
-        pass
-
-    tier: Optional[Tier1] = None
 
 
 class SponsorshipTierChanged(GhWebhooksModel):
@@ -3222,8 +3716,8 @@ class SponsorshipTierChanged(GhWebhooksModel):
         pass
 
     action: Optional[Literal["tier_changed"]] = None
-    sponsorship: Optional[Sponsorship5] = None
-    changes: Optional[Changes32] = None
+    sponsorship: Optional[Sponsorship] = None
+    changes: Optional[Changes34] = None
     sender: Optional[User] = None
 
 
@@ -3240,11 +3734,11 @@ class SponsorshipEvent(GhWebhooksModel):
     ] = None
 
 
-class Author(Committer):
+class Author3(CommitterModel):
     date: Optional[str] = None
 
 
-class Committer1(Author):
+class Committer1(Author3):
     pass
 
 
@@ -3252,7 +3746,7 @@ class Commit2(GhWebhooksModel):
     class Config:
         pass
 
-    author: Optional[Author] = None
+    author: Optional[Author3] = None
     committer: Optional[Committer1] = None
     message: Optional[str] = None
     tree: Optional[Tree] = None
@@ -3271,35 +3765,9 @@ class Commit1(GhWebhooksModel):
     url: Optional[AnyUrl] = None
     html_url: Optional[AnyUrl] = None
     comments_url: Optional[AnyUrl] = None
-    author: Optional[Optional[User]] = None
-    committer: Optional[Optional[User]] = None
+    author: Optional[User] = None
+    committer: Optional[User] = None
     parents: Optional[List[Parent]] = None
-
-
-class WorkflowJob2(GhWebhooksModel):
-    class Config:
-        pass
-
-    id: Optional[int] = None
-    run_id: Optional[float] = None
-    run_url: Optional[AnyUrl] = None
-    run_attempt: Optional[int] = None
-    head_sha: Optional[str] = None
-    node_id: Optional[str] = None
-    name: Optional[str] = None
-    check_run_url: Optional[AnyUrl] = None
-    html_url: Optional[AnyUrl] = None
-    url: Optional[AnyUrl] = None
-    status: Optional[Literal["queued"]] = None
-    steps: Optional[List[WorkflowStep]] = None
-    conclusion: Optional[Any] = None
-    labels: Optional[List[str]] = None
-    runner_id: Optional[Optional[int]] = None
-    runner_name: Optional[Optional[str]] = None
-    runner_group_id: Optional[Optional[int]] = None
-    runner_group_name: Optional[Optional[str]] = None
-    started_at: Optional[datetime] = None
-    completed_at: Optional[Any] = None
 
 
 class App(GhWebhooksModel):
@@ -3311,7 +3779,7 @@ class App(GhWebhooksModel):
     node_id: Optional[str] = None
     owner: Optional[User] = None
     name: Optional[str] = Field(None, description="The name of the GitHub app")
-    description: Optional[Optional[str]] = None
+    description: Optional[str] = None
     external_url: Optional[AnyUrl] = None
     html_url: Optional[AnyUrl] = None
     created_at: Optional[datetime] = None
@@ -3340,14 +3808,6 @@ class AutoMerge(GhWebhooksModel):
     )
 
 
-class Head3(Head6):
-    pass
-
-
-class Base4(Head6):
-    pass
-
-
 class CheckRunPullRequest(GhWebhooksModel):
     class Config:
         pass
@@ -3355,8 +3815,8 @@ class CheckRunPullRequest(GhWebhooksModel):
     url: Optional[AnyUrl] = None
     id: Optional[int] = None
     number: Optional[int] = None
-    head: Optional[Head3] = None
-    base: Optional[Base4] = None
+    head: Optional[Head] = None
+    base: Optional[Base7] = None
 
 
 class CommitSimple(GhWebhooksModel):
@@ -3367,8 +3827,8 @@ class CommitSimple(GhWebhooksModel):
     tree_id: Optional[str] = None
     message: Optional[str] = None
     timestamp: Optional[str] = None
-    author: Optional[Committer] = None
-    committer: Optional[Committer] = None
+    author: Optional[CommitterModel] = None
+    committer: Optional[CommitterModel] = None
 
 
 class Commit(GhWebhooksModel):
@@ -3388,16 +3848,120 @@ class Commit(GhWebhooksModel):
     url: Optional[AnyUrl] = Field(
         None, description="URL that points to the commit API resource."
     )
-    author: Optional[Committer] = None
-    committer: Optional[Committer] = None
+    author: Optional[CommitterModel] = None
+    committer: Optional[CommitterModel] = None
     added: Optional[List[str]] = Field(
-        None, description="An array of files added in the commit."
+        None,
+        description="An array of files added in the commit. For extremely large commits where GitHub is unable to calculate this list in a timely manner, this may be empty even if files were added.",
     )
     modified: Optional[List[str]] = Field(
-        None, description="An array of files modified by the commit."
+        None,
+        description="An array of files modified by the commit. For extremely large commits where GitHub is unable to calculate this list in a timely manner, this may be empty even if files were modified.",
     )
     removed: Optional[List[str]] = Field(
-        None, description="An array of files removed in the commit."
+        None,
+        description="An array of files removed in the commit. For extremely large commits where GitHub is unable to calculate this list in a timely manner, this may be empty even if files were removed.",
+    )
+
+
+class SecurityAdvisory4(GhWebhooksModel):
+    class Config:
+        pass
+
+    ghsa_id: Optional[str] = Field(
+        None, description="Details for the GitHub Security Advisory."
+    )
+    cve_id: Optional[str] = Field(
+        None, description="The unique CVE ID assigned to the advisory."
+    )
+    summary: Optional[str] = Field(
+        None, description="A short, plain text summary of the advisory."
+    )
+    description: Optional[str] = Field(
+        None, description="A long-form Markdown-supported description of the advisory."
+    )
+    vulnerabilities: Optional[List[Vulnerability4]] = Field(
+        None, description="Vulnerable version range information for the advisory."
+    )
+    severity: Optional[Severity6] = Field(
+        None, description="The severity of the advisory."
+    )
+    cvss: Optional[SecurityAdvisoryCvss] = None
+    cwes: Optional[List[SecurityAdvisoryCwes]] = Field(
+        None,
+        description="Details for the advisory pertaining to Common Weakness Enumeration.",
+    )
+    identifiers: Optional[List[Identifier4]] = Field(
+        None,
+        description="Values that identify this advisory among security information sources.",
+    )
+    references: Optional[List[Reference4]] = Field(
+        None, description="Links to additional advisory information."
+    )
+    published_at: Optional[datetime] = Field(
+        None,
+        description="The time that the advisory was published in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.",
+    )
+    updated_at: Optional[datetime] = Field(
+        None,
+        description="The time that the advisory was last modified in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.",
+    )
+    withdrawn_at: Optional[datetime] = Field(
+        None,
+        description="The time that the advisory was withdrawn in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.",
+    )
+
+
+class DependabotAlert(GhWebhooksModel):
+    class Config:
+        pass
+
+    number: Optional[int] = Field(None, description="The security alert number.")
+    state: Optional[State14] = Field(
+        None, description="The state of the Dependabot alert."
+    )
+    dependency: Optional[Dependency] = Field(
+        None, description="Details for the vulnerable dependency."
+    )
+    security_advisory: Optional[SecurityAdvisory4] = Field(
+        None, description="Details for the GitHub Security Advisory."
+    )
+    security_vulnerability: Optional[SecurityVulnerability] = Field(
+        None,
+        description="Details pertaining to one vulnerable version range for the advisory.",
+    )
+    url: Optional[AnyUrl] = Field(
+        None, description="The REST API URL of the alert resource."
+    )
+    html_url: Optional[AnyUrl] = Field(
+        None, description="The GitHub URL of the alert resource."
+    )
+    created_at: Optional[datetime] = Field(
+        None,
+        description="The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.",
+    )
+    updated_at: Optional[datetime] = Field(
+        None,
+        description="The time that the alert was last updated in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.",
+    )
+    dismissed_at: Optional[datetime] = Field(
+        None,
+        description="The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.",
+    )
+    auto_dismissed_at: Optional[datetime] = Field(
+        None,
+        description="The time that the alert was auto-dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.",
+    )
+    dismissed_by: Optional[User] = None
+    dismissed_reason: Optional[DismissedReason4] = Field(
+        None, description="The reason that the alert was dismissed."
+    )
+    dismissed_comment: Optional[str] = Field(
+        None, description="An optional comment associated with the alert's dismissal."
+    )
+    fixed_at: Optional[datetime] = Field(
+        None,
+        description="The time that the alert was no longer detected and was considered fixed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.",
     )
 
 
@@ -3408,12 +3972,13 @@ class DeploymentWorkflowRun(GhWebhooksModel):
     id: Optional[int] = None
     name: Optional[str] = None
     path: Optional[str] = None
+    display_title: Optional[str] = None
     node_id: Optional[str] = None
     head_branch: Optional[str] = None
     head_sha: Optional[str] = None
     run_number: Optional[int] = None
     event: Optional[str] = None
-    status: Optional[Status10] = None
+    status: Optional[Status12] = None
     conclusion: Optional[Conclusion1] = None
     workflow_id: Optional[int] = None
     check_suite_id: Optional[int] = None
@@ -3427,6 +3992,7 @@ class DeploymentWorkflowRun(GhWebhooksModel):
     triggering_actor: Optional[User] = None
     run_attempt: Optional[int] = None
     run_started_at: Optional[datetime] = None
+    referenced_workflows: Optional[List[ReferencedWorkflow]] = None
 
 
 class Deployment(GhWebhooksModel):
@@ -3434,23 +4000,35 @@ class Deployment(GhWebhooksModel):
         pass
 
     url: Optional[AnyUrl] = None
-    id: Optional[int] = None
+    id: Optional[int] = Field(None, description="Unique identifier of the deployment")
     node_id: Optional[str] = None
     sha: Optional[str] = None
-    ref: Optional[str] = None
-    task: Optional[str] = None
+    ref: Optional[str] = Field(
+        None, description="The ref to deploy. This can be a branch, tag, or sha."
+    )
+    task: Optional[str] = Field(
+        None, description="Parameter to specify a task to execute"
+    )
     payload: Optional[Dict[str, Any]] = None
     original_environment: Optional[str] = None
-    environment: Optional[str] = None
-    transient_environment: Optional[bool] = None
-    production_environment: Optional[bool] = None
-    description: Optional[Optional[str]] = None
+    environment: Optional[str] = Field(
+        None, description="Name of the target deployment environment."
+    )
+    transient_environment: Optional[bool] = Field(
+        None,
+        description="Specifies if the given environment will no longer exist at some point in the future. Default: false.",
+    )
+    production_environment: Optional[bool] = Field(
+        None,
+        description="Specifies if the given environment is one that end-users directly interact with. Default: false.",
+    )
+    description: Optional[str] = None
     creator: Optional[User] = None
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
     statuses_url: Optional[AnyUrl] = None
     repository_url: Optional[AnyUrl] = None
-    performed_via_github_app: Optional[Optional[App]] = None
+    performed_via_github_app: Optional[App] = None
 
 
 class Discussion(GhWebhooksModel):
@@ -3459,23 +4037,23 @@ class Discussion(GhWebhooksModel):
 
     repository_url: Optional[str] = None
     category: Optional[Category3] = None
-    answer_html_url: Optional[Optional[str]] = None
-    answer_chosen_at: Optional[Optional[str]] = None
-    answer_chosen_by: Optional[Optional[User]] = None
+    answer_html_url: Optional[str] = None
+    answer_chosen_at: Optional[datetime] = None
+    answer_chosen_by: Optional[User] = None
     html_url: Optional[str] = None
     id: Optional[int] = None
     node_id: Optional[str] = None
     number: Optional[int] = None
-    title: Optional[str] = None
+    title: Optional[str] = Field(None, description="The discussion post's title.")
     user: Optional[User] = None
-    state: Optional[State13] = None
+    state: Optional[State15] = None
     locked: Optional[bool] = None
     comments: Optional[int] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     author_association: Optional[AuthorAssociation] = None
-    active_lock_reason: Optional[Optional[str]] = None
-    body: Optional[str] = None
+    active_lock_reason: Optional[str] = None
+    body: Optional[str] = Field(None, description="The discussion post's body text.")
     reactions: Optional[Reactions] = None
 
 
@@ -3503,11 +4081,11 @@ class Installation(GhWebhooksModel):
     events: Optional[List[Event1]] = None
     created_at: Optional[Union[datetime, int]] = None
     updated_at: Optional[Union[datetime, int]] = None
-    single_file_name: Optional[Optional[str]] = None
+    single_file_name: Optional[str] = None
     has_multiple_single_files: Optional[bool] = None
     single_file_paths: Optional[List[str]] = None
-    suspended_by: Optional[Optional[User]] = None
-    suspended_at: Optional[Optional[str]] = None
+    suspended_by: Optional[User] = None
+    suspended_at: Optional[datetime] = None
 
 
 class IssueComment(GhWebhooksModel):
@@ -3527,7 +4105,7 @@ class IssueComment(GhWebhooksModel):
     author_association: Optional[AuthorAssociation] = None
     body: Optional[str] = Field(None, description="Contents of the issue comment")
     reactions: Optional[Reactions] = None
-    performed_via_github_app: Optional[Optional[App]] = None
+    performed_via_github_app: Optional[App] = None
 
 
 class Membership(GhWebhooksModel):
@@ -3535,8 +4113,10 @@ class Membership(GhWebhooksModel):
         pass
 
     url: Optional[AnyUrl] = None
-    state: Optional[str] = None
-    role: Optional[str] = None
+    state: Optional[str] = Field(
+        None, description="The state of the user's membership in the team."
+    )
+    role: Optional[str] = Field(None, description="The role of the user in the team.")
     organization_url: Optional[AnyUrl] = None
     user: Optional[User] = None
 
@@ -3552,15 +4132,15 @@ class Milestone(GhWebhooksModel):
     node_id: Optional[str] = None
     number: Optional[int] = Field(None, description="The number of the milestone.")
     title: Optional[str] = Field(None, description="The title of the milestone.")
-    description: Optional[Optional[str]] = None
+    description: Optional[str] = None
     creator: Optional[User] = None
     open_issues: Optional[int] = None
     closed_issues: Optional[int] = None
-    state: Optional[State5] = Field(None, description="The state of the milestone.")
+    state: Optional[State6] = Field(None, description="The state of the milestone.")
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
-    due_on: Optional[Optional[str]] = None
-    closed_at: Optional[Optional[str]] = None
+    due_on: Optional[datetime] = None
+    closed_at: Optional[datetime] = None
 
 
 class ProjectCard(GhWebhooksModel):
@@ -3573,7 +4153,7 @@ class ProjectCard(GhWebhooksModel):
     column_id: Optional[int] = None
     id: Optional[int] = Field(None, description="The project card's ID")
     node_id: Optional[str] = None
-    note: Optional[Optional[str]] = None
+    note: Optional[str] = None
     archived: Optional[bool] = Field(
         None, description="Whether or not the card is archived"
     )
@@ -3581,7 +4161,7 @@ class ProjectCard(GhWebhooksModel):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     content_url: Optional[AnyUrl] = None
-    after_id: Optional[Optional[Union[str, float]]] = None
+    after_id: Optional[Union[str, float]] = None
 
 
 class Project(GhWebhooksModel):
@@ -3595,9 +4175,9 @@ class Project(GhWebhooksModel):
     id: Optional[int] = None
     node_id: Optional[str] = None
     name: Optional[str] = Field(None, description="Name of the project")
-    body: Optional[Optional[str]] = Field(None, description="Body of the project")
+    body: Optional[str] = Field(None, description="Body of the project")
     number: Optional[int] = None
-    state: Optional[State5] = Field(
+    state: Optional[State6] = Field(
         None, description="State of the project; either 'open' or 'closed'"
     )
     creator: Optional[User] = None
@@ -3617,7 +4197,7 @@ class ProjectsV2Item(GhWebhooksModel):
     creator: Optional[User] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
-    archived_at: Optional[Optional[str]] = None
+    archived_at: Optional[datetime] = None
 
 
 class PullRequestReviewComment(GhWebhooksModel):
@@ -3643,7 +4223,7 @@ class PullRequestReviewComment(GhWebhooksModel):
     path: Optional[str] = Field(
         None, description="The relative path of the file to which the comment applies."
     )
-    position: Optional[Optional[int]] = Field(
+    position: Optional[int] = Field(
         None, description="The line index in the diff to which the comment applies."
     )
     original_position: Optional[int] = Field(
@@ -3667,19 +4247,19 @@ class PullRequestReviewComment(GhWebhooksModel):
         None, description="URL for the pull request that the review comment belongs to."
     )
     author_association: Optional[AuthorAssociation] = None
-    links: Optional[Links6] = Field(None, alias="_links")
+    links: Optional[Links] = Field(None, alias="_links")
     reactions: Optional[Reactions] = None
-    start_line: Optional[Optional[int]] = Field(
+    start_line: Optional[int] = Field(
         None, description="The first line of the range for a multi-line comment."
     )
-    original_start_line: Optional[Optional[int]] = Field(
+    original_start_line: Optional[int] = Field(
         None, description="The first line of the range for a multi-line comment."
     )
     start_side: Optional[StartSide] = Field(
         "RIGHT",
         description="The side of the first line of the range for a multi-line comment.",
     )
-    line: Optional[Optional[int]] = Field(
+    line: Optional[int] = Field(
         None,
         description="The line of the blob to which the comment applies. The last line of the range for a multi-line comment",
     )
@@ -3694,6 +4274,27 @@ class PullRequestReviewComment(GhWebhooksModel):
     in_reply_to_id: Optional[int] = Field(
         None, description="The comment ID to reply to."
     )
+    subject_type: Optional[SubjectType] = Field(
+        None,
+        description="The level at which the comment is targeted, can be a diff line or a file.",
+    )
+
+
+class PullRequestReview(GhWebhooksModel):
+    class Config:
+        pass
+
+    id: Optional[int] = Field(None, description="Unique identifier of the review")
+    node_id: Optional[str] = None
+    user: Optional[User] = None
+    body: Optional[str] = Field(None, description="The text of the review.")
+    commit_id: Optional[str] = Field(None, description="A commit SHA for the review.")
+    submitted_at: Optional[datetime] = None
+    state: Optional[State19] = None
+    html_url: Optional[AnyUrl] = None
+    pull_request_url: Optional[AnyUrl] = None
+    author_association: Optional[AuthorAssociation] = None
+    links: Optional[Links4] = Field(None, alias="_links")
 
 
 class ReleaseAsset(GhWebhooksModel):
@@ -3705,7 +4306,7 @@ class ReleaseAsset(GhWebhooksModel):
     id: Optional[int] = None
     node_id: Optional[str] = None
     name: Optional[str] = Field(None, description="The file name of the asset.")
-    label: Optional[Optional[str]] = None
+    label: Optional[str] = None
     state: Optional[Literal["uploaded"]] = Field(
         None, description="State of the release asset."
     )
@@ -3741,11 +4342,11 @@ class ReleaseModel(GhWebhooksModel):
         None,
         description="Whether the release is identified as a prerelease or a full release.",
     )
-    created_at: Optional[Optional[str]] = None
-    published_at: Optional[Optional[str]] = None
+    created_at: Optional[datetime] = None
+    published_at: Optional[datetime] = None
     assets: Optional[List[ReleaseAsset]] = None
-    tarball_url: Optional[Optional[str]] = None
-    zipball_url: Optional[Optional[str]] = None
+    tarball_url: Optional[AnyUrl] = None
+    zipball_url: Optional[AnyUrl] = None
     body: Optional[str] = None
     mentions_count: Optional[int] = None
     reactions: Optional[Reactions] = None
@@ -3756,54 +4357,160 @@ class RepositoryLite(GhWebhooksModel):
     class Config:
         pass
 
-    archive_url: Optional[str] = None
-    assignees_url: Optional[str] = None
-    blobs_url: Optional[str] = None
-    branches_url: Optional[str] = None
-    collaborators_url: Optional[str] = None
-    comments_url: Optional[str] = None
-    commits_url: Optional[str] = None
-    compare_url: Optional[str] = None
-    contents_url: Optional[str] = None
-    contributors_url: Optional[AnyUrl] = None
-    deployments_url: Optional[AnyUrl] = None
-    description: Optional[Optional[str]] = None
-    downloads_url: Optional[AnyUrl] = None
-    events_url: Optional[AnyUrl] = None
-    fork: Optional[bool] = None
-    forks_url: Optional[AnyUrl] = None
-    full_name: Optional[str] = None
-    git_commits_url: Optional[str] = None
-    git_refs_url: Optional[str] = None
-    git_tags_url: Optional[str] = None
-    hooks_url: Optional[AnyUrl] = None
-    html_url: Optional[AnyUrl] = None
+    archive_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to download the repository as an archive.",
+    )
+    assignees_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to list the available assignees for issues in the repository.",
+    )
+    blobs_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to create or retrieve a raw Git blob in the repository.",
+    )
+    branches_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about branches in the repository.",
+    )
+    collaborators_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about collaborators of the repository.",
+    )
+    comments_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about comments on the repository.",
+    )
+    commits_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about commits on the repository.",
+    )
+    compare_url: Optional[str] = Field(
+        None, description="A template for the API URL to compare two commits or refs."
+    )
+    contents_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get the contents of the repository.",
+    )
+    contributors_url: Optional[AnyUrl] = Field(
+        None,
+        description="A template for the API URL to list the contributors to the repository.",
+    )
+    deployments_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to list the deployments of the repository."
+    )
+    description: Optional[str] = Field(None, description="The repository description.")
+    downloads_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to list the downloads on the repository."
+    )
+    events_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to list the events of the repository."
+    )
+    fork: Optional[bool] = Field(None, description="Whether the repository is a fork.")
+    forks_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to list the forks of the repository."
+    )
+    full_name: Optional[str] = Field(
+        None, description="The full, globally unique, name of the repository."
+    )
+    git_commits_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about Git commits of the repository.",
+    )
+    git_refs_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about Git refs of the repository.",
+    )
+    git_tags_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about Git tags of the repository.",
+    )
+    hooks_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to list the hooks on the repository."
+    )
+    html_url: Optional[AnyUrl] = Field(
+        None, description="The URL to view the repository on GitHub.com."
+    )
     id: Optional[int] = Field(None, description="Unique identifier of the repository")
-    issue_comment_url: Optional[str] = None
-    issue_events_url: Optional[str] = None
-    issues_url: Optional[str] = None
-    keys_url: Optional[str] = None
-    labels_url: Optional[str] = None
-    languages_url: Optional[AnyUrl] = None
-    merges_url: Optional[AnyUrl] = None
-    milestones_url: Optional[str] = None
+    issue_comment_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about issue comments on the repository.",
+    )
+    issue_events_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about issue events on the repository.",
+    )
+    issues_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about issues on the repository.",
+    )
+    keys_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about deploy keys on the repository.",
+    )
+    labels_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about labels of the repository.",
+    )
+    languages_url: Optional[AnyUrl] = Field(
+        None,
+        description="The API URL to get information about the languages of the repository.",
+    )
+    merges_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to merge branches in the repository."
+    )
+    milestones_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about milestones of the repository.",
+    )
     name: Optional[str] = Field(None, description="The name of the repository.")
-    node_id: Optional[str] = None
-    notifications_url: Optional[str] = None
+    node_id: Optional[str] = Field(
+        None, description="The GraphQL identifier of the repository."
+    )
+    notifications_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about notifications on the repository.",
+    )
     owner: Optional[User] = None
     private: Optional[bool] = Field(
         None, description="Whether the repository is private or public."
     )
-    pulls_url: Optional[str] = None
-    releases_url: Optional[str] = None
-    stargazers_url: Optional[AnyUrl] = None
-    statuses_url: Optional[str] = None
-    subscribers_url: Optional[AnyUrl] = None
-    subscription_url: Optional[AnyUrl] = None
-    tags_url: Optional[AnyUrl] = None
-    teams_url: Optional[AnyUrl] = None
-    trees_url: Optional[str] = None
-    url: Optional[AnyUrl] = None
+    pulls_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about pull requests on the repository.",
+    )
+    releases_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about releases on the repository.",
+    )
+    stargazers_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to list the stargazers on the repository."
+    )
+    statuses_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about statuses of a commit.",
+    )
+    subscribers_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to list the subscribers on the repository."
+    )
+    subscription_url: Optional[AnyUrl] = Field(
+        None,
+        description="The API URL to subscribe to notifications for this repository.",
+    )
+    tags_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to get information about tags on the repository."
+    )
+    teams_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to list the teams on the repository."
+    )
+    trees_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to create or retrieve a raw Git tree of the repository.",
+    )
+    url: Optional[AnyUrl] = Field(
+        None,
+        description="The URL to get more information about the repository from the GitHub API.",
+    )
 
 
 class RepositoryVulnerabilityAlertAlert(GhWebhooksModel):
@@ -3818,7 +4525,7 @@ class RepositoryVulnerabilityAlertAlert(GhWebhooksModel):
     affected_package_name: Optional[str] = None
     dismisser: Optional[User] = None
     dismiss_reason: Optional[str] = None
-    dismissed_at: Optional[str] = None
+    dismissed_at: Optional[datetime] = None
     severity: Optional[str] = None
     ghsa_id: Optional[str] = None
     external_reference: Optional[AnyUrl] = None
@@ -3826,7 +4533,7 @@ class RepositoryVulnerabilityAlertAlert(GhWebhooksModel):
     fixed_in: Optional[str] = None
     fixed_at: Optional[datetime] = None
     fix_reason: Optional[str] = None
-    created_at: Optional[str] = None
+    created_at: Optional[datetime] = None
 
 
 class Repository(GhWebhooksModel):
@@ -3834,65 +4541,171 @@ class Repository(GhWebhooksModel):
         pass
 
     id: Optional[int] = Field(None, description="Unique identifier of the repository")
-    node_id: Optional[str] = None
+    node_id: Optional[str] = Field(
+        None, description="The GraphQL identifier of the repository."
+    )
     name: Optional[str] = Field(None, description="The name of the repository.")
-    full_name: Optional[str] = None
+    full_name: Optional[str] = Field(
+        None, description="The full, globally unique, name of the repository."
+    )
     private: Optional[bool] = Field(
         None, description="Whether the repository is private or public."
     )
     owner: Optional[User] = None
-    html_url: Optional[AnyUrl] = None
-    description: Optional[Optional[str]] = None
-    fork: Optional[bool] = None
-    url: Optional[AnyUrl] = None
-    forks_url: Optional[AnyUrl] = None
-    keys_url: Optional[str] = None
-    collaborators_url: Optional[str] = None
-    teams_url: Optional[AnyUrl] = None
-    hooks_url: Optional[AnyUrl] = None
-    issue_events_url: Optional[str] = None
-    events_url: Optional[AnyUrl] = None
-    assignees_url: Optional[str] = None
-    branches_url: Optional[str] = None
-    tags_url: Optional[AnyUrl] = None
-    blobs_url: Optional[str] = None
-    git_tags_url: Optional[str] = None
-    git_refs_url: Optional[str] = None
-    trees_url: Optional[str] = None
-    statuses_url: Optional[str] = None
-    languages_url: Optional[AnyUrl] = None
-    stargazers_url: Optional[AnyUrl] = None
-    contributors_url: Optional[AnyUrl] = None
-    subscribers_url: Optional[AnyUrl] = None
-    subscription_url: Optional[AnyUrl] = None
-    commits_url: Optional[str] = None
-    git_commits_url: Optional[str] = None
-    comments_url: Optional[str] = None
-    issue_comment_url: Optional[str] = None
-    contents_url: Optional[str] = None
-    compare_url: Optional[str] = None
-    merges_url: Optional[AnyUrl] = None
-    archive_url: Optional[str] = None
-    downloads_url: Optional[AnyUrl] = None
-    issues_url: Optional[str] = None
-    pulls_url: Optional[str] = None
-    milestones_url: Optional[str] = None
-    notifications_url: Optional[str] = None
-    labels_url: Optional[str] = None
-    releases_url: Optional[str] = None
-    deployments_url: Optional[AnyUrl] = None
+    html_url: Optional[AnyUrl] = Field(
+        None, description="The URL to view the repository on GitHub.com."
+    )
+    description: Optional[str] = Field(None, description="The repository description.")
+    fork: Optional[bool] = Field(None, description="Whether the repository is a fork.")
+    url: Optional[AnyUrl] = Field(
+        None,
+        description="The URL to get more information about the repository from the GitHub API.",
+    )
+    forks_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to list the forks of the repository."
+    )
+    keys_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about deploy keys on the repository.",
+    )
+    collaborators_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about collaborators of the repository.",
+    )
+    teams_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to list the teams on the repository."
+    )
+    hooks_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to list the hooks on the repository."
+    )
+    issue_events_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about issue events on the repository.",
+    )
+    events_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to list the events of the repository."
+    )
+    assignees_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to list the available assignees for issues in the repository.",
+    )
+    branches_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about branches in the repository.",
+    )
+    tags_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to get information about tags on the repository."
+    )
+    blobs_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to create or retrieve a raw Git blob in the repository.",
+    )
+    git_tags_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about Git tags of the repository.",
+    )
+    git_refs_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about Git refs of the repository.",
+    )
+    trees_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to create or retrieve a raw Git tree of the repository.",
+    )
+    statuses_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about statuses of a commit.",
+    )
+    languages_url: Optional[AnyUrl] = Field(
+        None,
+        description="The API URL to get information about the languages of the repository.",
+    )
+    stargazers_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to list the stargazers on the repository."
+    )
+    contributors_url: Optional[AnyUrl] = Field(
+        None,
+        description="A template for the API URL to list the contributors to the repository.",
+    )
+    subscribers_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to list the subscribers on the repository."
+    )
+    subscription_url: Optional[AnyUrl] = Field(
+        None,
+        description="The API URL to subscribe to notifications for this repository.",
+    )
+    commits_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about commits on the repository.",
+    )
+    git_commits_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about Git commits of the repository.",
+    )
+    comments_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about comments on the repository.",
+    )
+    issue_comment_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about issue comments on the repository.",
+    )
+    contents_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get the contents of the repository.",
+    )
+    compare_url: Optional[str] = Field(
+        None, description="A template for the API URL to compare two commits or refs."
+    )
+    merges_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to merge branches in the repository."
+    )
+    archive_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to download the repository as an archive.",
+    )
+    downloads_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to list the downloads on the repository."
+    )
+    issues_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about issues on the repository.",
+    )
+    pulls_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about pull requests on the repository.",
+    )
+    milestones_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about milestones of the repository.",
+    )
+    notifications_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about notifications on the repository.",
+    )
+    labels_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about labels of the repository.",
+    )
+    releases_url: Optional[str] = Field(
+        None,
+        description="A template for the API URL to get information about releases on the repository.",
+    )
+    deployments_url: Optional[AnyUrl] = Field(
+        None, description="The API URL to list the deployments of the repository."
+    )
     created_at: Optional[Union[int, datetime]] = None
     updated_at: Optional[datetime] = None
-    pushed_at: Optional[Optional[Union[int, datetime]]] = None
+    pushed_at: Optional[Union[int, datetime]] = None
     git_url: Optional[AnyUrl] = None
     ssh_url: Optional[str] = None
     clone_url: Optional[AnyUrl] = None
     svn_url: Optional[AnyUrl] = None
-    homepage: Optional[Optional[str]] = None
+    homepage: Optional[str] = None
     size: Optional[int] = None
     stargazers_count: Optional[int] = None
     watchers_count: Optional[int] = None
-    language: Optional[Optional[str]] = None
+    language: Optional[str] = None
     has_issues: Optional[bool] = Field(True, description="Whether issues are enabled.")
     has_projects: Optional[bool] = Field(
         True, description="Whether projects are enabled."
@@ -3902,8 +4715,11 @@ class Repository(GhWebhooksModel):
     )
     has_wiki: Optional[bool] = Field(True, description="Whether the wiki is enabled.")
     has_pages: Optional[bool] = None
+    has_discussions: Optional[bool] = Field(
+        True, description="Whether discussions are enabled."
+    )
     forks_count: Optional[int] = None
-    mirror_url: Optional[Optional[str]] = None
+    mirror_url: Optional[AnyUrl] = None
     archived: Optional[bool] = Field(
         False, description="Whether the repository is archived."
     )
@@ -3911,7 +4727,7 @@ class Repository(GhWebhooksModel):
         None, description="Returns whether or not this repository is disabled."
     )
     open_issues_count: Optional[int] = None
-    license: Optional[Optional[License]] = None
+    license: Optional[License] = None
     forks: Optional[int] = None
     open_issues: Optional[int] = None
     watchers: Optional[int] = None
@@ -3936,7 +4752,12 @@ class Repository(GhWebhooksModel):
     )
     allow_update_branch: Optional[bool] = None
     use_squash_pr_title_as_default: Optional[bool] = None
+    squash_merge_commit_message: Optional[str] = None
+    squash_merge_commit_title: Optional[str] = None
+    merge_commit_message: Optional[str] = None
+    merge_commit_title: Optional[str] = None
     is_template: Optional[bool] = None
+    web_commit_signoff_required: Optional[bool] = None
     topics: Optional[List[str]] = None
     visibility: Optional[Visibility] = None
     delete_branch_on_merge: Optional[bool] = Field(
@@ -3947,6 +4768,57 @@ class Repository(GhWebhooksModel):
     permissions: Optional[Permissions3] = None
     public: Optional[bool] = None
     organization: Optional[str] = None
+
+
+class SecretScanningAlert(GhWebhooksModel):
+    class Config:
+        pass
+
+    number: Optional[int] = Field(None, description="The security alert number.")
+    created_at: Optional[datetime] = Field(
+        None,
+        description="The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.",
+    )
+    updated_at: Optional[datetime] = None
+    url: Optional[AnyUrl] = Field(
+        None, description="The REST API URL of the alert resource."
+    )
+    html_url: Optional[AnyUrl] = Field(
+        None, description="The GitHub URL of the alert resource."
+    )
+    locations_url: Optional[AnyUrl] = Field(
+        None, description="The REST API URL of the code locations for this alert."
+    )
+    state: Optional[State22] = None
+    resolution: Optional[Resolution1] = Field(
+        None,
+        description="**Required when the `state` is `resolved`.** The reason for resolving the alert.",
+    )
+    resolved_at: Optional[datetime] = Field(
+        None,
+        description="The time that the alert was resolved in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.",
+    )
+    resolved_by: Optional[User] = None
+    resolution_comment: Optional[str] = Field(
+        None, description="An optional comment to resolve an alert."
+    )
+    secret_type: Optional[str] = Field(
+        None, description="The type of secret that secret scanning detected."
+    )
+    secret_type_display_name: Optional[str] = Field(
+        None,
+        description='User-friendly name for the detected secret, matching the `secret_type`.\nFor a list of built-in patterns, see "[Secret scanning patterns](https://docs.github.com/code-security/secret-scanning/secret-scanning-patterns#supported-secrets-for-advanced-security)."',
+    )
+    secret: Optional[str] = Field(None, description="The secret that was detected.")
+    push_protection_bypassed: Optional[bool] = Field(
+        None,
+        description="Whether push protection was bypassed for the detected secret.",
+    )
+    push_protection_bypassed_by: Optional[User] = None
+    push_protection_bypassed_at: Optional[datetime] = Field(
+        None,
+        description="The time that push protection was bypassed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.",
+    )
 
 
 class Head5(GhWebhooksModel):
@@ -3976,22 +4848,22 @@ class SimplePullRequest(GhWebhooksModel):
     patch_url: Optional[AnyUrl] = None
     issue_url: Optional[AnyUrl] = None
     number: Optional[int] = None
-    state: Optional[State5] = None
+    state: Optional[State6] = None
     locked: Optional[bool] = None
     title: Optional[str] = None
     user: Optional[User] = None
     body: Optional[str] = None
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
-    closed_at: Optional[Optional[str]] = None
-    merged_at: Optional[Optional[str]] = None
-    merge_commit_sha: Optional[Optional[str]] = None
-    assignee: Optional[Optional[User]] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    closed_at: Optional[datetime] = None
+    merged_at: Optional[datetime] = None
+    merge_commit_sha: Optional[str] = None
+    assignee: Optional[User] = None
     assignees: Optional[List[User]] = None
     requested_reviewers: Optional[List[Union[User, Team]]] = None
     requested_teams: Optional[List[Team]] = None
     labels: Optional[List[Label]] = None
-    milestone: Optional[Optional[Milestone]] = None
+    milestone: Optional[Milestone] = None
     draft: Optional[bool] = None
     commits_url: Optional[AnyUrl] = None
     review_comments_url: Optional[AnyUrl] = None
@@ -4000,9 +4872,9 @@ class SimplePullRequest(GhWebhooksModel):
     statuses_url: Optional[AnyUrl] = None
     head: Optional[Head5] = None
     base: Optional[Base6] = None
-    links: Optional[Links8] = Field(None, alias="_links")
+    links: Optional[Links5] = Field(None, alias="_links")
     author_association: Optional[AuthorAssociation] = None
-    auto_merge: Optional[Optional[AutoMerge]] = None
+    auto_merge: Optional[AutoMerge] = None
     active_lock_reason: Optional[ActiveLockReason] = None
 
 
@@ -4020,71 +4892,109 @@ class WorkflowJob(GhWebhooksModel):
     check_run_url: Optional[AnyUrl] = None
     html_url: Optional[AnyUrl] = None
     url: Optional[AnyUrl] = None
-    status: Optional[Status2] = Field(
+    status: Optional[Status1] = Field(
         None,
         description="The current status of the job. Can be `queued`, `in_progress`, or `completed`.",
     )
-    steps: Optional[List[WorkflowStep]] = Field(None, min_items=1)
+    steps: Optional[List[WorkflowStep]] = None
     conclusion: Optional[Conclusion15] = None
     labels: Optional[List[str]] = Field(
         None,
         description='Custom labels for the job. Specified by the [`"runs-on"` attribute](https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on) in the workflow YAML.',
     )
-    runner_id: Optional[Optional[int]] = Field(
+    runner_id: Optional[int] = Field(
         None,
         description="The ID of the runner that is running this job. This will be `null` as long as `workflow_job[status]` is `queued`.",
     )
-    runner_name: Optional[Optional[str]] = Field(
+    runner_name: Optional[str] = Field(
         None,
         description="The name of the runner that is running this job. This will be `null` as long as `workflow_job[status]` is `queued`.",
     )
-    runner_group_id: Optional[Optional[int]] = Field(
+    runner_group_id: Optional[int] = Field(
         None,
         description="The ID of the runner group that is running this job. This will be `null` as long as `workflow_job[status]` is `queued`.",
     )
-    runner_group_name: Optional[Optional[str]] = Field(
+    runner_group_name: Optional[str] = Field(
         None,
         description="The name of the runner group that is running this job. This will be `null` as long as `workflow_job[status]` is `queued`.",
     )
-    started_at: Optional[str] = None
-    completed_at: Optional[Optional[str]] = None
+    started_at: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
+    workflow_name: Optional[str] = Field(None, description="The name of the workflow.")
+    head_branch: Optional[str] = Field(
+        None, description="The name of the current branch."
+    )
+    created_at: Optional[datetime] = None
 
 
 class WorkflowRun(GhWebhooksModel):
     class Config:
         pass
 
-    artifacts_url: Optional[AnyUrl] = None
-    cancel_url: Optional[AnyUrl] = None
-    check_suite_url: Optional[AnyUrl] = None
-    check_suite_id: Optional[int] = None
-    check_suite_node_id: Optional[str] = None
+    artifacts_url: Optional[AnyUrl] = Field(
+        None, description="The URL to the artifacts for the workflow run."
+    )
+    cancel_url: Optional[AnyUrl] = Field(
+        None, description="The URL to cancel the workflow run."
+    )
+    check_suite_url: Optional[AnyUrl] = Field(
+        None, description="The URL to the associated check suite."
+    )
+    check_suite_id: Optional[int] = Field(
+        None, description="The ID of the associated check suite."
+    )
+    check_suite_node_id: Optional[str] = Field(
+        None, description="The node ID of the associated check suite."
+    )
     conclusion: Optional[Conclusion] = None
     created_at: Optional[datetime] = None
     event: Optional[str] = None
     head_branch: Optional[str] = None
     head_commit: Optional[CommitSimple] = None
     head_repository: Optional[RepositoryLite] = None
-    head_sha: Optional[str] = None
-    path: Optional[str] = None
+    head_sha: Optional[str] = Field(
+        None,
+        description="The SHA of the head commit that points to the version of the workflow being run.",
+    )
+    path: Optional[str] = Field(None, description="The full path of the workflow")
+    display_title: Optional[str] = None
     html_url: Optional[AnyUrl] = None
-    id: Optional[int] = None
-    jobs_url: Optional[AnyUrl] = None
-    logs_url: Optional[AnyUrl] = None
+    id: Optional[int] = Field(None, description="The ID of the workflow run.")
+    jobs_url: Optional[AnyUrl] = Field(
+        None, description="The URL to the jobs for the workflow run."
+    )
+    logs_url: Optional[AnyUrl] = Field(
+        None, description="The URL to download the logs for the workflow run."
+    )
     node_id: Optional[str] = None
-    name: Optional[str] = None
-    pull_requests: Optional[List[PullRequest10]] = None
+    name: Optional[str] = Field(None, description="The name of the workflow run.")
+    pull_requests: Optional[List[PullRequest12]] = None
     repository: Optional[RepositoryLite] = None
-    rerun_url: Optional[AnyUrl] = None
-    run_number: Optional[int] = None
-    status: Optional[Status12] = None
+    rerun_url: Optional[AnyUrl] = Field(
+        None, description="The URL to rerun the workflow run."
+    )
+    run_number: Optional[int] = Field(
+        None, description="The auto incrementing run number for the workflow run."
+    )
+    status: Optional[Status14] = None
     updated_at: Optional[datetime] = None
-    url: Optional[AnyUrl] = None
-    workflow_id: Optional[int] = None
-    workflow_url: Optional[AnyUrl] = None
-    run_attempt: Optional[int] = None
-    run_started_at: Optional[datetime] = None
-    previous_attempt_url: Optional[Optional[AnyUrl]] = None
+    url: Optional[AnyUrl] = Field(None, description="The URL to the workflow run.")
+    workflow_id: Optional[int] = Field(
+        None, description="The ID of the parent workflow."
+    )
+    workflow_url: Optional[AnyUrl] = Field(None, description="The URL to the workflow.")
+    run_attempt: Optional[int] = Field(
+        None,
+        description="Attempt number of the run, 1 for first attempt and higher if the workflow was re-run.",
+    )
+    referenced_workflows: Optional[List[ReferencedWorkflow]] = None
+    run_started_at: Optional[datetime] = Field(
+        None, description="The start time of the latest run. Resets on re-run."
+    )
+    previous_attempt_url: Optional[AnyUrl] = Field(
+        None,
+        description="The URL to the previous attempted run of this workflow, if one exists.",
+    )
     actor: Optional[User] = None
     triggering_actor: Optional[User] = None
 
@@ -4146,15 +5056,15 @@ class CheckSuite(GhWebhooksModel):
         None, description="The id of the check suite that this check run is part of."
     )
     node_id: Optional[str] = None
-    head_branch: Optional[Optional[str]] = None
+    head_branch: Optional[str] = None
     head_sha: Optional[str] = Field(
         None, description="The SHA of the head commit that is being checked."
     )
     status: Optional[Status] = None
     conclusion: Optional[Conclusion1] = None
     url: Optional[AnyUrl] = None
-    before: Optional[Optional[str]] = None
-    after: Optional[Optional[str]] = None
+    before: Optional[str] = None
+    after: Optional[str] = None
     pull_requests: Optional[List[CheckRunPullRequest]] = Field(
         None,
         description="An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_branch`.  \n  \n**Note:**\n\n*   The `head_sha` of the check suite can differ from the `sha` of the pull request if subsequent pushes are made into the PR.\n*   When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty.",
@@ -4186,11 +5096,11 @@ class CheckRun(GhWebhooksModel):
         None,
         description="The result of the completed check run. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed.",
     )
-    started_at: Optional[str] = Field(
+    started_at: Optional[datetime] = Field(
         None,
         description="The time that the check run began. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.",
     )
-    completed_at: Optional[str] = Field(
+    completed_at: Optional[datetime] = Field(
         None,
         description="The time the check completed. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.",
     )
@@ -4228,15 +5138,15 @@ class CheckSuite1(GhWebhooksModel):
         None, description="The id of the check suite that this check run is part of."
     )
     node_id: Optional[str] = None
-    head_branch: Optional[Optional[str]] = None
+    head_branch: Optional[str] = None
     head_sha: Optional[str] = Field(
         None, description="The SHA of the head commit that is being checked."
     )
     status: Optional[Status2] = None
     conclusion: Optional[Conclusion1] = None
     url: Optional[AnyUrl] = None
-    before: Optional[Optional[str]] = None
-    after: Optional[Optional[str]] = None
+    before: Optional[str] = None
+    after: Optional[str] = None
     pull_requests: Optional[List[CheckRunPullRequest]] = Field(
         None,
         description="An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_branch`.  \n  \n**Note:**\n\n*   The `head_sha` of the check suite can differ from the `sha` of the pull request if subsequent pushes are made into the PR.\n*   When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty.",
@@ -4268,15 +5178,15 @@ class CheckRun1(GhWebhooksModel):
         None,
         description="The result of the completed check run. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed.",
     )
-    started_at: Optional[str] = Field(
+    started_at: Optional[datetime] = Field(
         None,
         description="The time that the check run began. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.",
     )
-    completed_at: Optional[Optional[str]] = Field(
+    completed_at: Optional[datetime] = Field(
         None,
         description="The time the check completed. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.",
     )
-    output: Optional[Output1] = None
+    output: Optional[Output] = None
     name: Optional[str] = Field(None, description="The name of the check run.")
     check_suite: Optional[CheckSuite1] = None
     app: Optional[App] = None
@@ -4293,7 +5203,7 @@ class CheckRunCreated(GhWebhooksModel):
         None,
         description="The [check_run](https://docs.github.com/en/rest/reference/checks#get-a-check-run).",
     )
-    requested_action: Optional[RequestedAction1] = Field(
+    requested_action: Optional[RequestedAction] = Field(
         None, description="The action requested by the user."
     )
     repository: Optional[Repository] = None
@@ -4310,15 +5220,15 @@ class CheckSuite2(GhWebhooksModel):
         None, description="The id of the check suite that this check run is part of."
     )
     node_id: Optional[str] = None
-    head_branch: Optional[Optional[str]] = None
+    head_branch: Optional[str] = None
     head_sha: Optional[str] = Field(
         None, description="The SHA of the head commit that is being checked."
     )
     status: Optional[Status1] = None
     conclusion: Optional[Conclusion1] = None
     url: Optional[AnyUrl] = None
-    before: Optional[Optional[str]] = None
-    after: Optional[Optional[str]] = None
+    before: Optional[str] = None
+    after: Optional[str] = None
     pull_requests: Optional[List[CheckRunPullRequest]] = Field(
         None,
         description="An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_branch`.  \n  \n**Note:**\n\n*   The `head_sha` of the check suite can differ from the `sha` of the pull request if subsequent pushes are made into the PR.\n*   When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty.",
@@ -4350,15 +5260,15 @@ class CheckRun2(GhWebhooksModel):
         None,
         description="The result of the completed check run. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed.",
     )
-    started_at: Optional[str] = Field(
+    started_at: Optional[datetime] = Field(
         None,
         description="The time that the check run began. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.",
     )
-    completed_at: Optional[Optional[str]] = Field(
+    completed_at: Optional[datetime] = Field(
         None,
         description="The time the check completed. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.",
     )
-    output: Optional[Output2] = None
+    output: Optional[Output] = None
     name: Optional[str] = Field(None, description="The name of the check run.")
     check_suite: Optional[CheckSuite2] = None
     app: Optional[App] = None
@@ -4375,7 +5285,7 @@ class CheckRunRequestedAction(GhWebhooksModel):
         None,
         description="The [check_run](https://docs.github.com/en/rest/reference/checks#get-a-check-run).",
     )
-    requested_action: Optional[RequestedAction2] = Field(
+    requested_action: Optional[RequestedAction] = Field(
         None, description="The action requested by the user."
     )
     repository: Optional[Repository] = None
@@ -4392,15 +5302,15 @@ class CheckSuite3(GhWebhooksModel):
         None, description="The id of the check suite that this check run is part of."
     )
     node_id: Optional[str] = None
-    head_branch: Optional[Optional[str]] = None
+    head_branch: Optional[str] = None
     head_sha: Optional[str] = Field(
         None, description="The SHA of the head commit that is being checked."
     )
     status: Optional[Literal["completed"]] = None
     conclusion: Optional[Conclusion7] = None
     url: Optional[AnyUrl] = None
-    before: Optional[Optional[str]] = None
-    after: Optional[Optional[str]] = None
+    before: Optional[str] = None
+    after: Optional[str] = None
     pull_requests: Optional[List[CheckRunPullRequest]] = Field(
         None,
         description="An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_branch`.  \n  \n**Note:**\n\n*   The `head_sha` of the check suite can differ from the `sha` of the pull request if subsequent pushes are made into the PR.\n*   When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty.",
@@ -4431,15 +5341,15 @@ class CheckRun3(GhWebhooksModel):
         None,
         description="The result of the completed check run. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has `completed`.",
     )
-    started_at: Optional[str] = Field(
+    started_at: Optional[datetime] = Field(
         None,
         description="The time that the check run began. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.",
     )
-    completed_at: Optional[str] = Field(
+    completed_at: Optional[datetime] = Field(
         None,
         description="The time the check completed. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.",
     )
-    output: Optional[Output3] = None
+    output: Optional[Output] = None
     name: Optional[str] = Field(None, description="The name of the check.")
     check_suite: Optional[CheckSuite3] = None
     app: Optional[App] = None
@@ -4456,7 +5366,7 @@ class CheckRunRerequested(GhWebhooksModel):
         None,
         description="The [check_run](https://docs.github.com/en/rest/reference/checks#get-a-check-run).",
     )
-    requested_action: Optional[RequestedAction3] = Field(
+    requested_action: Optional[RequestedAction] = Field(
         None, description="The action requested by the user."
     )
     repository: Optional[Repository] = None
@@ -4482,7 +5392,7 @@ class CheckSuite4(GhWebhooksModel):
 
     id: Optional[int] = None
     node_id: Optional[str] = None
-    head_branch: Optional[Optional[str]] = Field(
+    head_branch: Optional[str] = Field(
         None, description="The head branch name the changes are on."
     )
     head_sha: Optional[str] = Field(
@@ -4490,7 +5400,7 @@ class CheckSuite4(GhWebhooksModel):
     )
     status: Optional[Status5] = Field(
         None,
-        description="The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`.",
+        description="The summary status for all check runs that are part of the check suite. Can be `queued`, `requested`, `in_progress`, or `completed`.",
     )
     conclusion: Optional[Conclusion1] = Field(
         None,
@@ -4499,8 +5409,8 @@ class CheckSuite4(GhWebhooksModel):
     url: Optional[AnyUrl] = Field(
         None, description="URL that points to the check suite API resource."
     )
-    before: Optional[Optional[str]] = None
-    after: Optional[Optional[str]] = None
+    before: Optional[str] = None
+    after: Optional[str] = None
     pull_requests: Optional[List[CheckRunPullRequest]] = Field(
         None,
         description="An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty.",
@@ -4536,7 +5446,7 @@ class CheckSuite5(GhWebhooksModel):
 
     id: Optional[int] = None
     node_id: Optional[str] = None
-    head_branch: Optional[Optional[str]] = Field(
+    head_branch: Optional[str] = Field(
         None, description="The head branch name the changes are on."
     )
     head_sha: Optional[str] = Field(
@@ -4544,7 +5454,7 @@ class CheckSuite5(GhWebhooksModel):
     )
     status: Optional[Status5] = Field(
         None,
-        description="The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`.",
+        description="The summary status for all check runs that are part of the check suite. Can be `queued`, `requested`, `in_progress`, or `completed`.",
     )
     conclusion: Optional[Conclusion1] = Field(
         None,
@@ -4553,8 +5463,8 @@ class CheckSuite5(GhWebhooksModel):
     url: Optional[AnyUrl] = Field(
         None, description="URL that points to the check suite API resource."
     )
-    before: Optional[Optional[str]] = None
-    after: Optional[Optional[str]] = None
+    before: Optional[str] = None
+    after: Optional[str] = None
     pull_requests: Optional[List[CheckRunPullRequest]] = Field(
         None,
         description="An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty.",
@@ -4590,7 +5500,7 @@ class CheckSuite6(GhWebhooksModel):
 
     id: Optional[int] = None
     node_id: Optional[str] = None
-    head_branch: Optional[Optional[str]] = Field(
+    head_branch: Optional[str] = Field(
         None, description="The head branch name the changes are on."
     )
     head_sha: Optional[str] = Field(
@@ -4598,7 +5508,7 @@ class CheckSuite6(GhWebhooksModel):
     )
     status: Optional[Status5] = Field(
         None,
-        description="The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`.",
+        description="The summary status for all check runs that are part of the check suite. Can be `queued`, `requested`, `in_progress`, or `completed`.",
     )
     conclusion: Optional[Conclusion1] = Field(
         None,
@@ -4607,8 +5517,8 @@ class CheckSuite6(GhWebhooksModel):
     url: Optional[AnyUrl] = Field(
         None, description="URL that points to the check suite API resource."
     )
-    before: Optional[Optional[str]] = None
-    after: Optional[Optional[str]] = None
+    before: Optional[str] = None
+    after: Optional[str] = None
     pull_requests: Optional[List[CheckRunPullRequest]] = Field(
         None,
         description="An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty.",
@@ -4824,7 +5734,7 @@ class CreateEvent(GhWebhooksModel):
         None,
         description="The name of the repository's default branch (usually `main`).",
     )
-    description: Optional[Optional[str]] = Field(
+    description: Optional[str] = Field(
         None, description="The repository's current description."
     )
     pusher_type: Optional[str] = Field(
@@ -4859,6 +5769,99 @@ class DeleteEvent(GhWebhooksModel):
     organization: Optional[Organization] = None
 
 
+class Alert6(DependabotAlert):
+    state: Optional[Literal["open"]] = None
+    fixed_at: None = None
+    dismissed_at: None = None
+    dismissed_by: None = None
+    dismissed_reason: None = None
+    dismissed_comment: None = None
+
+
+class DependabotAlertCreated(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["created"]] = None
+    alert: Optional[Alert6] = None
+    repository: Optional[Repository] = None
+    sender: Optional[GithubOrg] = None
+    installation: Optional[InstallationLite] = None
+    organization: Optional[Organization] = None
+
+
+class Alert7(DependabotAlert):
+    state: Optional[Literal["dismissed"]] = None
+    dismissed_at: Optional[datetime] = None
+    dismissed_by: Optional[User] = None
+    dismissed_reason: Optional[DismissedReason3] = None
+
+
+class DependabotAlertDismissed(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["dismissed"]] = None
+    alert: Optional[Alert7] = None
+    repository: Optional[Repository] = None
+    sender: Optional[User] = None
+    installation: Optional[InstallationLite] = None
+    organization: Optional[Organization] = None
+
+
+class Alert8(DependabotAlert):
+    state: Optional[Literal["fixed"]] = None
+    fixed_at: Optional[datetime] = None
+
+
+class DependabotAlertFixed(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["fixed"]] = None
+    alert: Optional[Alert8] = None
+    repository: Optional[Repository] = None
+    sender: Optional[GithubOrg] = None
+    installation: Optional[InstallationLite] = None
+    organization: Optional[Organization] = None
+
+
+class DependabotAlertReintroduced(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["reintroduced"]] = None
+    alert: Optional[DependabotAlert] = None
+    repository: Optional[Repository] = None
+    sender: Optional[GithubOrg] = None
+    installation: Optional[InstallationLite] = None
+    organization: Optional[Organization] = None
+
+
+class DependabotAlertReopened(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["reopened"]] = None
+    alert: Optional[DependabotAlert] = None
+    repository: Optional[Repository] = None
+    sender: Optional[User] = None
+    installation: Optional[InstallationLite] = None
+    organization: Optional[Organization] = None
+
+
+class DependabotAlertEvent(GhWebhooksModel):
+    __root__: Optional[
+        Union[
+            DependabotAlertCreated,
+            DependabotAlertDismissed,
+            DependabotAlertFixed,
+            DependabotAlertReintroduced,
+            DependabotAlertReopened,
+        ]
+    ] = None
+
+
 class DeployKeyCreated(GhWebhooksModel):
     class Config:
         pass
@@ -4879,7 +5882,7 @@ class DeployKeyDeleted(GhWebhooksModel):
         pass
 
     action: Optional[Literal["deleted"]] = None
-    key: Optional[Key1] = Field(
+    key: Optional[Key] = Field(
         None,
         description="The [`deploy key`](https://docs.github.com/en/rest/reference/deployments#get-a-deploy-key) resource.",
     )
@@ -4899,8 +5902,8 @@ class DeploymentCreated(GhWebhooksModel):
 
     action: Optional[Literal["created"]] = None
     deployment: Optional[Deployment] = None
-    workflow: Optional[Optional[Workflow]] = None
-    workflow_run: Optional[Optional[DeploymentWorkflowRun]] = None
+    workflow: Optional[Workflow] = None
+    workflow_run: Optional[DeploymentWorkflowRun] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
     installation: Optional[InstallationLite] = None
@@ -4918,7 +5921,7 @@ class DeploymentStatus(GhWebhooksModel):
     url: Optional[AnyUrl] = None
     id: Optional[int] = None
     node_id: Optional[str] = None
-    state: Optional[str] = Field(
+    state: Optional[State4] = Field(
         None,
         description="The new state. Can be `pending`, `success`, `failure`, or `error`.",
     )
@@ -4932,11 +5935,11 @@ class DeploymentStatus(GhWebhooksModel):
     target_url: Optional[str] = Field(
         None, description="The optional link added to the status."
     )
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
     deployment_url: Optional[AnyUrl] = None
     repository_url: Optional[AnyUrl] = None
-    performed_via_github_app: Optional[Optional[App]] = None
+    performed_via_github_app: Optional[App] = None
 
 
 class DeploymentStatusCreated(GhWebhooksModel):
@@ -4999,11 +6002,11 @@ class DiscussionCategoryChanged(GhWebhooksModel):
 
 
 class Discussion1(Discussion):
-    state: Optional[State4] = None
+    state: Optional[State5] = None
     locked: Optional[Literal[False]] = None
-    answer_html_url: Optional[Any] = None
-    answer_chosen_at: Optional[Any] = None
-    answer_chosen_by: Optional[Any] = None
+    answer_html_url: None = None
+    answer_chosen_at: None = None
+    answer_chosen_by: None = None
 
 
 class DiscussionCreated(GhWebhooksModel):
@@ -5108,9 +6111,9 @@ class DiscussionTransferred(GhWebhooksModel):
 
 class Discussion3(Discussion):
     category: Optional[Category2] = None
-    answer_html_url: Optional[Any] = None
-    answer_chosen_at: Optional[Any] = None
-    answer_chosen_by: Optional[Any] = None
+    answer_html_url: None = None
+    answer_chosen_at: None = None
+    answer_chosen_by: None = None
 
 
 class DiscussionUnanswered(GhWebhooksModel):
@@ -5206,7 +6209,7 @@ class DiscussionCommentDeleted(GhWebhooksModel):
         pass
 
     action: Optional[Literal["deleted"]] = None
-    comment: Optional[Comment2] = None
+    comment: Optional[Comment1] = None
     discussion: Optional[Discussion] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
@@ -5220,7 +6223,7 @@ class DiscussionCommentEdited(GhWebhooksModel):
 
     changes: Optional[Changes4] = None
     action: Optional[Literal["edited"]] = None
-    comment: Optional[Comment3] = None
+    comment: Optional[Comment1] = None
     discussion: Optional[Discussion] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
@@ -5287,11 +6290,11 @@ class InstallationDeleted(GhWebhooksModel):
 
     action: Optional[Literal["deleted"]] = None
     installation: Optional[Installation] = None
-    repositories: Optional[List[Repository2]] = Field(
+    repositories: Optional[List[Repository1]] = Field(
         None,
         description="An array of repository objects that the installation can access.",
     )
-    requester: Optional[Any] = None
+    requester: None = None
     sender: Optional[User] = None
 
 
@@ -5301,11 +6304,11 @@ class InstallationNewPermissionsAccepted(GhWebhooksModel):
 
     action: Optional[Literal["new_permissions_accepted"]] = None
     installation: Optional[Installation] = None
-    repositories: Optional[List[Repository3]] = Field(
+    repositories: Optional[List[Repository1]] = Field(
         None,
         description="An array of repository objects that the installation can access.",
     )
-    requester: Optional[Any] = None
+    requester: None = None
     sender: Optional[User] = None
 
 
@@ -5320,17 +6323,17 @@ class InstallationSuspend(GhWebhooksModel):
 
     action: Optional[Literal["suspend"]] = None
     installation: Optional[Installation1] = None
-    repositories: Optional[List[Repository4]] = Field(
+    repositories: Optional[List[Repository1]] = Field(
         None,
         description="An array of repository objects that the installation can access.",
     )
-    requester: Optional[Any] = None
+    requester: None = None
     sender: Optional[User] = None
 
 
 class Installation2(Installation):
-    suspended_by: Optional[Any] = None
-    suspended_at: Optional[Any] = None
+    suspended_by: None = None
+    suspended_at: None = None
 
 
 class InstallationUnsuspend(GhWebhooksModel):
@@ -5339,11 +6342,11 @@ class InstallationUnsuspend(GhWebhooksModel):
 
     action: Optional[Literal["unsuspend"]] = None
     installation: Optional[Installation2] = None
-    repositories: Optional[List[Repository5]] = Field(
+    repositories: Optional[List[Repository1]] = Field(
         None,
         description="An array of repository objects that the installation can access.",
     )
-    requester: Optional[Any] = None
+    requester: None = None
     sender: Optional[User] = None
 
 
@@ -5378,7 +6381,7 @@ class InstallationRepositoriesAdded(GhWebhooksModel):
         description="An array of repository objects, which were removed from the installation.",
         max_items=0,
     )
-    requester: Optional[Optional[User]] = None
+    requester: Optional[User] = None
     sender: Optional[User] = None
 
 
@@ -5392,16 +6395,16 @@ class InstallationRepositoriesRemoved(GhWebhooksModel):
         None,
         description="Describe whether all repositories have been selected or there's a selection involved",
     )
-    repositories_added: Optional[List[RepositoriesAddedItem1]] = Field(
+    repositories_added: Optional[List[RepositoriesAddedItem]] = Field(
         None,
         description="An array of repository objects, which were added to the installation.",
         max_items=0,
     )
-    repositories_removed: Optional[List[RepositoriesRemovedItem1]] = Field(
+    repositories_removed: Optional[List[RepositoriesRemovedItem]] = Field(
         None,
         description="An array of repository objects, which were removed from the installation.",
     )
-    requester: Optional[Optional[User]] = None
+    requester: Optional[User] = None
     sender: Optional[User] = None
 
 
@@ -5409,6 +6412,24 @@ class InstallationRepositoriesEvent(GhWebhooksModel):
     __root__: Optional[
         Union[InstallationRepositoriesAdded, InstallationRepositoriesRemoved]
     ] = None
+
+
+class InstallationTargetRenamed(GhWebhooksModel):
+    class Config:
+        pass
+
+    changes: Optional[Changes5] = None
+    action: Optional[Literal["renamed"]] = None
+    account: Optional[Account] = None
+    repository: Optional[Repository] = None
+    sender: Optional[User] = None
+    installation: Optional[InstallationLite] = None
+    organization: Optional[Organization] = None
+    target_type: Optional[str] = None
+
+
+class InstallationTargetEvent(GhWebhooksModel):
+    __root__: Optional[InstallationTargetRenamed] = None
 
 
 class LabelCreated(GhWebhooksModel):
@@ -5441,7 +6462,7 @@ class LabelEdited(GhWebhooksModel):
 
     action: Optional[Literal["edited"]] = None
     label: Optional[Label] = Field(None, description="The label that was edited.")
-    changes: Optional[Changes9] = Field(
+    changes: Optional[Changes10] = Field(
         None, description="The changes to the label if the action was `edited`."
     )
     repository: Optional[Repository] = None
@@ -5459,7 +6480,7 @@ class MemberAdded(GhWebhooksModel):
         pass
 
     action: Optional[Literal["added"]] = None
-    changes: Optional[Changes10] = None
+    changes: Optional[Changes11] = None
     member: Optional[User] = Field(None, description="The user that was added.")
     repository: Optional[Repository] = None
     installation: Optional[InstallationLite] = None
@@ -5475,7 +6496,7 @@ class MemberEdited(GhWebhooksModel):
     member: Optional[User] = Field(
         None, description="The user who's permissions are changed."
     )
-    changes: Optional[Changes11] = Field(
+    changes: Optional[Changes12] = Field(
         None, description="The changes to the collaborator permissions"
     )
     repository: Optional[Repository] = None
@@ -5498,6 +6519,22 @@ class MemberRemoved(GhWebhooksModel):
 
 class MemberEvent(GhWebhooksModel):
     __root__: Optional[Union[MemberAdded, MemberEdited, MemberRemoved]] = None
+
+
+class MergeGroupChecksRequested(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["checks_requested"]] = None
+    merge_group: Optional[MergeGroup] = Field(None, description="The merge group.")
+    repository: Optional[Repository] = None
+    sender: Optional[User] = None
+    installation: Optional[InstallationLite] = None
+    organization: Optional[Organization] = None
+
+
+class MergeGroupEvent(GhWebhooksModel):
+    __root__: Optional[MergeGroupChecksRequested] = None
 
 
 class MetaDeleted(GhWebhooksModel):
@@ -5537,7 +6574,7 @@ class MilestoneClosed(GhWebhooksModel):
 
 class Milestone2(Milestone):
     state: Optional[Literal["open"]] = None
-    closed_at: Optional[Any] = None
+    closed_at: None = None
 
 
 class MilestoneCreated(GhWebhooksModel):
@@ -5569,7 +6606,7 @@ class MilestoneEdited(GhWebhooksModel):
         pass
 
     action: Optional[Literal["edited"]] = None
-    changes: Optional[Changes12] = Field(
+    changes: Optional[Changes13] = Field(
         None, description="The changes to the milestone if the action was `edited`."
     )
     milestone: Optional[Milestone] = None
@@ -5579,16 +6616,12 @@ class MilestoneEdited(GhWebhooksModel):
     organization: Optional[Organization] = None
 
 
-class Milestone3(Milestone2):
-    pass
-
-
 class MilestoneOpened(GhWebhooksModel):
     class Config:
         pass
 
     action: Optional[Literal["opened"]] = None
-    milestone: Optional[Milestone3] = None
+    milestone: Optional[Milestone2] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
     installation: Optional[InstallationLite] = None
@@ -5640,17 +6673,6 @@ class OrganizationMemberRemoved(GhWebhooksModel):
     organization: Optional[Organization] = None
 
 
-class OrganizationRenamed(GhWebhooksModel):
-    class Config:
-        pass
-
-    action: Optional[Literal["renamed"]] = None
-    membership: Optional[Membership] = None
-    sender: Optional[User] = None
-    installation: Optional[InstallationLite] = None
-    organization: Optional[Organization] = None
-
-
 class OrganizationEvent(GhWebhooksModel):
     __root__: Optional[
         Union[
@@ -5663,6 +6685,82 @@ class OrganizationEvent(GhWebhooksModel):
     ] = None
 
 
+class Repository6(GhWebhooksModel):
+    class Config:
+        pass
+
+    repository: Optional[Repository] = None
+
+
+class BodyItem(GhWebhooksModel):
+    class Config:
+        pass
+
+    repository: Optional[Repository6] = None
+    info: Optional[Info] = None
+    attributes: Optional[Dict[str, Any]] = None
+    field_formatted: Optional[bool] = Field(None, alias="_formatted")
+
+
+class PackageVersionItem(GhWebhooksModel):
+    class Config:
+        pass
+
+    id: Optional[int] = Field(
+        None, description="Unique identifier of the package version."
+    )
+    version: Optional[str] = None
+    summary: Optional[str] = None
+    name: Optional[str] = Field(None, description="The name of the package version.")
+    description: Optional[str] = None
+    body: Optional[Union[str, BodyItem]] = None
+    body_html: Optional[str] = None
+    release: Optional[Release] = None
+    manifest: Optional[str] = None
+    html_url: Optional[AnyUrl] = None
+    tag_name: Optional[str] = None
+    target_commitish: Optional[str] = None
+    target_oid: Optional[str] = None
+    draft: Optional[bool] = None
+    prerelease: Optional[bool] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    metadata: Optional[List] = Field(None, description="Package Version Metadata")
+    container_metadata: Optional[ContainerMetadatum] = None
+    docker_metadata: Optional[List] = None
+    npm_metadata: Optional[PackageNpmMetadata] = None
+    nuget_metadata: Optional[List[PackageNugetMetadata]] = None
+    rubygems_metadata: Optional[List] = None
+    package_files: Optional[List[PackageFile]] = None
+    package_url: Optional[str] = None
+    author: Optional[User] = None
+    source_url: Optional[str] = None
+    installation_command: Optional[str] = None
+
+
+class Package(GhWebhooksModel):
+    class Config:
+        pass
+
+    id: Optional[int] = Field(None, description="Unique identifier of the package.")
+    name: Optional[str] = Field(None, description="The name of the package.")
+    namespace: Optional[str] = None
+    description: Optional[str] = None
+    ecosystem: Optional[str] = None
+    package_type: Optional[PackageType] = Field(
+        None,
+        description="The type of supported package. Packages in GitHub's Gradle registry have the type `maven`. Docker images pushed to GitHub's Container registry (`ghcr.io`) have the type `container`. You can use the type `docker` to find images that were pushed to GitHub's Docker registry (`docker.pkg.github.com`), even if these have now been migrated to the Container registry.",
+    )
+    html_url: Optional[AnyUrl] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    owner: Optional[User] = None
+    package_version: Optional[PackageVersionItem] = Field(
+        None, description="A version of a software package"
+    )
+    registry: Optional[Registry] = None
+
+
 class PackagePublished(GhWebhooksModel):
     class Config:
         pass
@@ -5673,7 +6771,68 @@ class PackagePublished(GhWebhooksModel):
     )
     repository: Optional[Repository] = None
     sender: Optional[User] = None
+    installation: Optional[InstallationLite] = None
     organization: Optional[Organization] = None
+
+
+class BodyItem1(BodyItem):
+    pass
+
+
+class PackageVersionItem1(GhWebhooksModel):
+    class Config:
+        pass
+
+    id: Optional[int] = Field(
+        None, description="Unique identifier of the package version."
+    )
+    version: Optional[str] = None
+    summary: Optional[str] = None
+    name: Optional[str] = Field(None, description="The name of the package version.")
+    description: Optional[str] = None
+    body: Optional[Union[str, BodyItem1]] = None
+    body_html: Optional[str] = None
+    release: Optional[Release] = None
+    manifest: Optional[str] = None
+    html_url: Optional[AnyUrl] = None
+    tag_name: Optional[str] = None
+    target_commitish: Optional[str] = None
+    target_oid: Optional[str] = None
+    draft: Optional[bool] = None
+    prerelease: Optional[bool] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    metadata: Optional[List] = Field(None, description="Package Version Metadata")
+    container_metadata: Optional[ContainerMetadatum1] = None
+    docker_metadata: Optional[List] = None
+    npm_metadata: Optional[PackageNpmMetadata] = None
+    nuget_metadata: Optional[List[PackageNugetMetadata]] = None
+    rubygems_metadata: Optional[List] = None
+    package_files: Optional[List[PackageFile]] = None
+    package_url: Optional[str] = None
+    author: Optional[User] = None
+    source_url: Optional[str] = None
+    installation_command: Optional[str] = None
+
+
+class Package1(GhWebhooksModel):
+    class Config:
+        pass
+
+    id: Optional[int] = Field(None, description="Unique identifier of the package.")
+    name: Optional[str] = Field(None, description="The name of the package.")
+    namespace: Optional[str] = None
+    description: Optional[str] = None
+    ecosystem: Optional[str] = None
+    package_type: Optional[PackageType] = None
+    html_url: Optional[AnyUrl] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    owner: Optional[User] = None
+    package_version: Optional[PackageVersionItem1] = Field(
+        None, description="A version of a software package"
+    )
+    registry: Optional[Registry] = None
 
 
 class PackageUpdated(GhWebhooksModel):
@@ -5686,6 +6845,7 @@ class PackageUpdated(GhWebhooksModel):
     )
     repository: Optional[Repository] = None
     sender: Optional[User] = None
+    installation: Optional[InstallationLite] = None
     organization: Optional[Organization] = None
 
 
@@ -5766,7 +6926,7 @@ class ProjectEdited(GhWebhooksModel):
         pass
 
     action: Optional[Literal["edited"]] = None
-    changes: Optional[Changes13] = Field(
+    changes: Optional[Changes15] = Field(
         None, description="The changes to the project if the action was `edited`."
     )
     project: Optional[Project] = None
@@ -5805,7 +6965,7 @@ class ProjectCardConverted(GhWebhooksModel):
         pass
 
     action: Optional[Literal["converted"]] = None
-    changes: Optional[Changes14] = None
+    changes: Optional[Changes16] = None
     project_card: Optional[ProjectCard] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
@@ -5842,7 +7002,7 @@ class ProjectCardEdited(GhWebhooksModel):
         pass
 
     action: Optional[Literal["edited"]] = None
-    changes: Optional[Changes15] = None
+    changes: Optional[Changes17] = None
     project_card: Optional[ProjectCard] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
@@ -5851,7 +7011,7 @@ class ProjectCardEdited(GhWebhooksModel):
 
 
 class ProjectCard1(ProjectCard):
-    after_id: Optional[Optional[float]] = None
+    after_id: Optional[float] = None
 
 
 class ProjectCardMoved(GhWebhooksModel):
@@ -5859,7 +7019,7 @@ class ProjectCardMoved(GhWebhooksModel):
         pass
 
     action: Optional[Literal["moved"]] = None
-    changes: Optional[Changes16] = None
+    changes: Optional[Changes18] = None
     project_card: Optional[ProjectCard1] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
@@ -5908,7 +7068,7 @@ class ProjectColumnEdited(GhWebhooksModel):
         pass
 
     action: Optional[Literal["edited"]] = None
-    changes: Optional[Changes17] = None
+    changes: Optional[Changes19] = None
     project_column: Optional[ProjectColumn] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
@@ -5950,7 +7110,7 @@ class ProjectsV2ItemArchived(GhWebhooksModel):
     class Config:
         pass
 
-    changes: Optional[Changes18] = None
+    changes: Optional[Changes20] = None
     action: Optional[Literal["archived"]] = None
     projects_v2_item: Optional[ProjectsV2ItemModel] = None
     sender: Optional[User] = None
@@ -5966,7 +7126,7 @@ class ProjectsV2ItemConverted(GhWebhooksModel):
     class Config:
         pass
 
-    changes: Optional[Changes19] = None
+    changes: Optional[Changes21] = None
     action: Optional[Literal["converted"]] = None
     projects_v2_item: Optional[ProjectsV2Item1] = None
     sender: Optional[User] = None
@@ -5975,7 +7135,7 @@ class ProjectsV2ItemConverted(GhWebhooksModel):
 
 
 class ProjectsV2Item2(ProjectsV2Item):
-    archived_at: Optional[Any] = None
+    archived_at: None = None
 
 
 class ProjectsV2ItemCreated(GhWebhooksModel):
@@ -6004,7 +7164,7 @@ class ProjectsV2ItemEdited(GhWebhooksModel):
     class Config:
         pass
 
-    changes: Optional[Changes20] = None
+    changes: Optional[Changes22] = None
     action: Optional[Literal["edited"]] = None
     projects_v2_item: Optional[ProjectsV2Item] = None
     sender: Optional[User] = None
@@ -6016,7 +7176,7 @@ class ProjectsV2ItemReordered(GhWebhooksModel):
     class Config:
         pass
 
-    changes: Optional[Changes21] = None
+    changes: Optional[Changes23] = None
     action: Optional[Literal["reordered"]] = None
     projects_v2_item: Optional[ProjectsV2Item] = None
     sender: Optional[User] = None
@@ -6024,17 +7184,13 @@ class ProjectsV2ItemReordered(GhWebhooksModel):
     installation: Optional[InstallationLite] = None
 
 
-class ProjectsV2Item3(ProjectsV2Item2):
-    pass
-
-
 class ProjectsV2ItemRestored(GhWebhooksModel):
     class Config:
         pass
 
-    changes: Optional[Changes22] = None
+    changes: Optional[Changes24] = None
     action: Optional[Literal["restored"]] = None
-    projects_v2_item: Optional[ProjectsV2Item3] = None
+    projects_v2_item: Optional[ProjectsV2Item2] = None
     sender: Optional[User] = None
     organization: Optional[Organization] = None
     installation: Optional[InstallationLite] = None
@@ -6054,7 +7210,7 @@ class ProjectsV2ItemEvent(GhWebhooksModel):
     ] = None
 
 
-class Repository6(Repository):
+class Repository8(Repository):
     private: Optional[Literal[False]] = None
 
 
@@ -6062,10 +7218,14 @@ class PublicEvent(GhWebhooksModel):
     class Config:
         pass
 
-    repository: Optional[Repository6] = None
+    repository: Optional[Repository8] = None
     sender: Optional[User] = None
     installation: Optional[InstallationLite] = None
     organization: Optional[Organization] = None
+
+
+class Review(PullRequestReview):
+    state: Optional[Literal["dismissed"]] = None
 
 
 class PullRequestReviewDismissed(GhWebhooksModel):
@@ -6073,7 +7233,7 @@ class PullRequestReviewDismissed(GhWebhooksModel):
         pass
 
     action: Optional[Literal["dismissed"]] = None
-    review: Optional[Review] = Field(None, description="The review that was affected.")
+    review: Optional[Review] = None
     pull_request: Optional[SimplePullRequest] = None
     repository: Optional[Repository] = None
     installation: Optional[InstallationLite] = None
@@ -6086,8 +7246,8 @@ class PullRequestReviewEdited(GhWebhooksModel):
         pass
 
     action: Optional[Literal["edited"]] = None
-    changes: Optional[Changes24] = None
-    review: Optional[Review1] = Field(None, description="The review that was affected.")
+    changes: Optional[Changes26] = None
+    review: Optional[PullRequestReview] = None
     pull_request: Optional[SimplePullRequest] = None
     repository: Optional[Repository] = None
     installation: Optional[InstallationLite] = None
@@ -6100,7 +7260,7 @@ class PullRequestReviewSubmitted(GhWebhooksModel):
         pass
 
     action: Optional[Literal["submitted"]] = None
-    review: Optional[Review2] = Field(None, description="The review that was affected.")
+    review: Optional[PullRequestReview] = None
     pull_request: Optional[SimplePullRequest] = None
     repository: Optional[Repository] = None
     installation: Optional[InstallationLite] = None
@@ -6118,140 +7278,6 @@ class PullRequestReviewEvent(GhWebhooksModel):
     ] = None
 
 
-class Head(Head5):
-    pass
-
-
-class Base1(Head5):
-    pass
-
-
-class PullRequest6(GhWebhooksModel):
-    class Config:
-        pass
-
-    url: Optional[AnyUrl] = None
-    id: Optional[int] = None
-    node_id: Optional[str] = None
-    html_url: Optional[AnyUrl] = None
-    diff_url: Optional[AnyUrl] = None
-    patch_url: Optional[AnyUrl] = None
-    issue_url: Optional[AnyUrl] = None
-    number: Optional[int] = None
-    state: Optional[State5] = None
-    locked: Optional[bool] = None
-    title: Optional[str] = None
-    user: Optional[User] = None
-    body: Optional[str] = None
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
-    closed_at: Optional[Optional[str]] = None
-    merged_at: Optional[Optional[str]] = None
-    merge_commit_sha: Optional[Optional[str]] = None
-    assignee: Optional[Optional[User]] = None
-    assignees: Optional[List[User]] = None
-    requested_reviewers: Optional[List[Union[User, Team]]] = None
-    requested_teams: Optional[List[Team]] = None
-    labels: Optional[List[Label]] = None
-    milestone: Optional[Optional[Milestone]] = None
-    draft: Optional[bool] = None
-    commits_url: Optional[AnyUrl] = None
-    review_comments_url: Optional[AnyUrl] = None
-    review_comment_url: Optional[str] = None
-    comments_url: Optional[AnyUrl] = None
-    statuses_url: Optional[AnyUrl] = None
-    head: Optional[Head] = None
-    base: Optional[Base1] = None
-    links: Optional[Links3] = Field(None, alias="_links")
-    auto_merge: Optional[Optional[AutoMerge]] = None
-    author_association: Optional[AuthorAssociation] = None
-    active_lock_reason: Optional[ActiveLockReason] = None
-
-
-class PullRequestReviewCommentCreated(GhWebhooksModel):
-    class Config:
-        pass
-
-    action: Optional[Literal["created"]] = None
-    comment: Optional[PullRequestReviewComment] = None
-    pull_request: Optional[PullRequest6] = None
-    repository: Optional[Repository] = None
-    installation: Optional[InstallationLite] = None
-    organization: Optional[Organization] = None
-    sender: Optional[User] = None
-
-
-class Head1(Head5):
-    pass
-
-
-class Base2(Head5):
-    pass
-
-
-class PullRequest7(GhWebhooksModel):
-    class Config:
-        pass
-
-    url: Optional[AnyUrl] = None
-    id: Optional[int] = None
-    node_id: Optional[str] = None
-    html_url: Optional[AnyUrl] = None
-    diff_url: Optional[AnyUrl] = None
-    patch_url: Optional[AnyUrl] = None
-    issue_url: Optional[AnyUrl] = None
-    number: Optional[int] = None
-    state: Optional[State5] = None
-    locked: Optional[bool] = None
-    title: Optional[str] = None
-    user: Optional[User] = None
-    body: Optional[str] = None
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
-    closed_at: Optional[Optional[str]] = None
-    merged_at: Optional[Optional[str]] = None
-    merge_commit_sha: Optional[Optional[str]] = None
-    assignee: Optional[Optional[User]] = None
-    assignees: Optional[List[User]] = None
-    requested_reviewers: Optional[List[Union[User, Team]]] = None
-    requested_teams: Optional[List[Team]] = None
-    labels: Optional[List[Label]] = None
-    milestone: Optional[Optional[Milestone]] = None
-    draft: Optional[bool] = None
-    commits_url: Optional[AnyUrl] = None
-    review_comments_url: Optional[AnyUrl] = None
-    review_comment_url: Optional[str] = None
-    comments_url: Optional[AnyUrl] = None
-    statuses_url: Optional[AnyUrl] = None
-    head: Optional[Head1] = None
-    base: Optional[Base2] = None
-    links: Optional[Links4] = Field(None, alias="_links")
-    auto_merge: Optional[Optional[AutoMerge]] = None
-    author_association: Optional[AuthorAssociation] = None
-    active_lock_reason: Optional[ActiveLockReason] = None
-
-
-class PullRequestReviewCommentDeleted(GhWebhooksModel):
-    class Config:
-        pass
-
-    action: Optional[Literal["deleted"]] = None
-    comment: Optional[PullRequestReviewComment] = None
-    pull_request: Optional[PullRequest7] = None
-    repository: Optional[Repository] = None
-    installation: Optional[InstallationLite] = None
-    organization: Optional[Organization] = None
-    sender: Optional[User] = None
-
-
-class Head2(Head5):
-    pass
-
-
-class Base3(Head5):
-    pass
-
-
 class PullRequest8(GhWebhooksModel):
     class Config:
         pass
@@ -6264,34 +7290,68 @@ class PullRequest8(GhWebhooksModel):
     patch_url: Optional[AnyUrl] = None
     issue_url: Optional[AnyUrl] = None
     number: Optional[int] = None
-    state: Optional[State5] = None
+    state: Optional[State6] = None
     locked: Optional[bool] = None
     title: Optional[str] = None
     user: Optional[User] = None
     body: Optional[str] = None
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
-    closed_at: Optional[Optional[str]] = None
-    merged_at: Optional[Optional[str]] = None
-    merge_commit_sha: Optional[Optional[str]] = None
-    assignee: Optional[Optional[User]] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    closed_at: Optional[datetime] = None
+    merged_at: Optional[datetime] = None
+    merge_commit_sha: Optional[str] = None
+    assignee: Optional[User] = None
     assignees: Optional[List[User]] = None
     requested_reviewers: Optional[List[Union[User, Team]]] = None
     requested_teams: Optional[List[Team]] = None
     labels: Optional[List[Label]] = None
-    milestone: Optional[Optional[Milestone]] = None
+    milestone: Optional[Milestone] = None
     draft: Optional[bool] = None
     commits_url: Optional[AnyUrl] = None
     review_comments_url: Optional[AnyUrl] = None
     review_comment_url: Optional[str] = None
     comments_url: Optional[AnyUrl] = None
     statuses_url: Optional[AnyUrl] = None
-    head: Optional[Head2] = None
-    base: Optional[Base3] = None
+    head: Optional[Head5] = None
+    base: Optional[Base6] = None
     links: Optional[Links5] = Field(None, alias="_links")
-    auto_merge: Optional[Optional[AutoMerge]] = None
+    auto_merge: Optional[AutoMerge] = None
     author_association: Optional[AuthorAssociation] = None
     active_lock_reason: Optional[ActiveLockReason] = None
+
+
+class PullRequestReviewCommentCreated(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["created"]] = None
+    comment: Optional[PullRequestReviewComment] = None
+    pull_request: Optional[PullRequest8] = None
+    repository: Optional[Repository] = None
+    installation: Optional[InstallationLite] = None
+    organization: Optional[Organization] = None
+    sender: Optional[User] = None
+
+
+class PullRequest9(PullRequest8):
+    pass
+
+
+class PullRequestReviewCommentDeleted(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["deleted"]] = None
+    comment: Optional[PullRequestReviewComment] = None
+    pull_request: Optional[PullRequest9] = None
+    repository: Optional[Repository] = None
+    installation: Optional[InstallationLite] = None
+    organization: Optional[Organization] = None
+    sender: Optional[User] = None
+
+
+class PullRequest10(PullRequest8):
+    pass
 
 
 class PullRequestReviewCommentEdited(GhWebhooksModel):
@@ -6299,11 +7359,11 @@ class PullRequestReviewCommentEdited(GhWebhooksModel):
         pass
 
     action: Optional[Literal["edited"]] = None
-    changes: Optional[Changes25] = Field(
+    changes: Optional[Changes27] = Field(
         None, description="The changes to the comment."
     )
     comment: Optional[PullRequestReviewComment] = None
-    pull_request: Optional[PullRequest8] = None
+    pull_request: Optional[PullRequest10] = None
     repository: Optional[Repository] = None
     installation: Optional[InstallationLite] = None
     organization: Optional[Organization] = None
@@ -6341,16 +7401,12 @@ class PullRequestReviewThreadResolved(GhWebhooksModel):
     sender: Optional[User] = None
 
 
-class Thread1(Thread):
-    pass
-
-
 class PullRequestReviewThreadUnresolved(GhWebhooksModel):
     class Config:
         pass
 
     action: Optional[Literal["unresolved"]] = None
-    thread: Optional[Thread1] = None
+    thread: Optional[Thread] = None
     pull_request: Optional[SimplePullRequest] = None
     repository: Optional[Repository] = None
     installation: Optional[InstallationLite] = None
@@ -6387,7 +7443,7 @@ class PushEvent(GhWebhooksModel):
     forced: Optional[bool] = Field(
         None, description="Whether this push was a force push of the `ref`."
     )
-    base_ref: Optional[Optional[str]] = None
+    base_ref: Optional[str] = None
     compare: Optional[str] = Field(
         None,
         description="URL that shows the changes in this `ref` update, from the `before` commit to the `after` commit. For a newly created `ref` that is directly based on the default branch, this is the comparison between the head of the default branch and the `after` commit. Otherwise, this shows all commits until the `after` commit.",
@@ -6396,15 +7452,183 @@ class PushEvent(GhWebhooksModel):
         None,
         description="An array of commit objects describing the pushed commits. (Pushed commits are all commits that are included in the `compare` between the `before` commit and the `after` commit.) The array includes a maximum of 20 commits. If necessary, you can use the [Commits API](https://docs.github.com/en/rest/reference/repos#commits) to fetch additional commits. This limit is applied to timeline events only and isn't applied to webhook deliveries.",
     )
-    head_commit: Optional[Optional[Commit]] = Field(
+    head_commit: Optional[Commit] = Field(
         None,
         description="For pushes where `after` is or points to a commit object, an expanded representation of that commit. For pushes where `after` refers to an annotated tag object, an expanded representation of the commit pointed to by the annotated tag.",
     )
     repository: Optional[Repository] = None
-    pusher: Optional[Committer] = None
+    pusher: Optional[CommitterModel] = None
     sender: Optional[User] = None
     installation: Optional[InstallationLite] = None
     organization: Optional[Organization] = None
+
+
+class Repository9(Repository6):
+    pass
+
+
+class BodyItem2(GhWebhooksModel):
+    class Config:
+        pass
+
+    repository: Optional[Repository9] = None
+    info: Optional[Info2] = None
+    attributes: Optional[Dict[str, Any]] = None
+    field_formatted: Optional[bool] = Field(None, alias="_formatted")
+
+
+class PackageVersionItem2(GhWebhooksModel):
+    class Config:
+        pass
+
+    id: Optional[int] = Field(
+        None, description="Unique identifier of the package version."
+    )
+    version: Optional[str] = None
+    summary: Optional[str] = None
+    name: Optional[str] = Field(None, description="The name of the package version.")
+    description: Optional[str] = None
+    body: Optional[Union[str, BodyItem2]] = None
+    body_html: Optional[str] = None
+    release: Optional[Release] = None
+    manifest: Optional[str] = None
+    html_url: Optional[AnyUrl] = None
+    tag_name: Optional[str] = None
+    target_commitish: Optional[str] = None
+    target_oid: Optional[str] = None
+    draft: Optional[bool] = None
+    prerelease: Optional[bool] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    metadata: Optional[List] = Field(None, description="Package Version Metadata")
+    docker_metadata: Optional[List] = None
+    container_metadata: Optional[ContainerMetadata] = None
+    npm_metadata: Optional[PackageNpmMetadata] = None
+    nuget_metadata: Optional[List[PackageNugetMetadata]] = None
+    rubygems_metadata: Optional[List] = None
+    package_files: Optional[List[PackageFile]] = None
+    package_url: Optional[str] = None
+    author: Optional[Author1] = None
+    source_url: Optional[str] = None
+    installation_command: Optional[str] = None
+
+
+class RegistryPackage(GhWebhooksModel):
+    class Config:
+        pass
+
+    id: Optional[int] = Field(None, description="Unique identifier of the package.")
+    name: Optional[str] = Field(None, description="The name of the package.")
+    namespace: Optional[str] = None
+    description: Optional[str] = None
+    ecosystem: Optional[str] = None
+    package_type: Optional[PackageType] = Field(
+        None,
+        description="The type of supported package. Packages in GitHub's Gradle registry have the type `maven`. Docker images pushed to GitHub's Container registry (`ghcr.io`) have the type `container`. You can use the type `docker` to find images that were pushed to GitHub's Docker registry (`docker.pkg.github.com`), even if these have now been migrated to the Container registry.",
+    )
+    html_url: Optional[AnyUrl] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    owner: Optional[User] = None
+    package_version: Optional[PackageVersionItem2] = Field(
+        None, description="A version of a software package"
+    )
+    registry: Optional[Registry] = None
+
+
+class RegistryPackagePublished(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["published"]] = None
+    registry_package: Optional[RegistryPackage] = Field(
+        None, description="Information about the package."
+    )
+    repository: Optional[Repository] = None
+    sender: Optional[User] = None
+    installation: Optional[InstallationLite] = None
+    organization: Optional[Organization] = None
+
+
+class BodyItem3(BodyItem2):
+    pass
+
+
+class PackageVersionItem3(GhWebhooksModel):
+    class Config:
+        pass
+
+    id: Optional[int] = Field(
+        None, description="Unique identifier of the package version."
+    )
+    version: Optional[str] = None
+    summary: Optional[str] = None
+    name: Optional[str] = Field(None, description="The name of the package version.")
+    description: Optional[str] = None
+    body: Optional[Union[str, BodyItem3]] = None
+    body_html: Optional[str] = None
+    release: Optional[Release] = None
+    manifest: Optional[str] = None
+    html_url: Optional[AnyUrl] = None
+    tag_name: Optional[str] = None
+    target_commitish: Optional[str] = None
+    target_oid: Optional[str] = None
+    draft: Optional[bool] = None
+    prerelease: Optional[bool] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    metadata: Optional[List] = Field(None, description="Package Version Metadata")
+    docker_metadata: Optional[List] = None
+    container_metadata: Optional[ContainerMetadata1] = None
+    npm_metadata: Optional[PackageNpmMetadata] = None
+    nuget_metadata: Optional[List[PackageNugetMetadata]] = None
+    rubygems_metadata: Optional[List] = None
+    package_files: Optional[List[PackageFile]] = None
+    package_url: Optional[str] = None
+    author: Optional[Author1] = None
+    source_url: Optional[str] = None
+    installation_command: Optional[str] = None
+
+
+class RegistryPackage1(GhWebhooksModel):
+    class Config:
+        pass
+
+    id: Optional[int] = Field(None, description="Unique identifier of the package.")
+    name: Optional[str] = Field(None, description="The name of the package.")
+    namespace: Optional[str] = None
+    description: Optional[str] = None
+    ecosystem: Optional[str] = None
+    package_type: Optional[PackageType] = Field(
+        None,
+        description="The type of supported package. Packages in GitHub's Gradle registry have the type `maven`. Docker images pushed to GitHub's Container registry (`ghcr.io`) have the type `container`. You can use the type `docker` to find images that were pushed to GitHub's Docker registry (`docker.pkg.github.com`), even if these have now been migrated to the Container registry.",
+    )
+    html_url: Optional[AnyUrl] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    owner: Optional[User] = None
+    package_version: Optional[PackageVersionItem3] = Field(
+        None, description="A version of a software package"
+    )
+    registry: Optional[Registry] = None
+
+
+class RegistryPackageUpdated(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["updated"]] = None
+    registry_package: Optional[RegistryPackage1] = Field(
+        None, description="Information about the package."
+    )
+    repository: Optional[Repository] = None
+    sender: Optional[User] = None
+    installation: Optional[InstallationLite] = None
+    organization: Optional[Organization] = None
+
+
+class RegistryPackageEvent(GhWebhooksModel):
+    __root__: Optional[Union[RegistryPackagePublished, RegistryPackageUpdated]] = None
 
 
 class ReleaseCreated(GhWebhooksModel):
@@ -6436,7 +7660,7 @@ class ReleaseEdited(GhWebhooksModel):
         pass
 
     action: Optional[Literal["edited"]] = None
-    changes: Optional[Changes26] = None
+    changes: Optional[Changes28] = None
     release: Optional[ReleaseModel] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
@@ -6444,7 +7668,7 @@ class ReleaseEdited(GhWebhooksModel):
     organization: Optional[Organization] = None
 
 
-class Release2(ReleaseModel):
+class Release4(ReleaseModel):
     prerelease: Optional[Literal[True]] = Field(
         None,
         description="Whether the release is identified as a prerelease or a full release.",
@@ -6456,14 +7680,14 @@ class ReleasePrereleased(GhWebhooksModel):
         pass
 
     action: Optional[Literal["prereleased"]] = None
-    release: Optional[Release2] = None
+    release: Optional[Release4] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
     installation: Optional[InstallationLite] = None
     organization: Optional[Organization] = None
 
 
-class Release3(ReleaseModel):
+class Release5(ReleaseModel):
     published_at: Optional[datetime] = None
 
 
@@ -6472,7 +7696,7 @@ class ReleasePublished(GhWebhooksModel):
         pass
 
     action: Optional[Literal["published"]] = None
-    release: Optional[Release3] = None
+    release: Optional[Release5] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
     installation: Optional[InstallationLite] = None
@@ -6491,8 +7715,8 @@ class ReleaseReleased(GhWebhooksModel):
     organization: Optional[Organization] = None
 
 
-class Release4(ReleaseModel):
-    published_at: Optional[Any] = None
+class Release6(ReleaseModel):
+    published_at: None = None
 
 
 class ReleaseUnpublished(GhWebhooksModel):
@@ -6500,7 +7724,7 @@ class ReleaseUnpublished(GhWebhooksModel):
         pass
 
     action: Optional[Literal["unpublished"]] = None
-    release: Optional[Release4] = None
+    release: Optional[Release6] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
     installation: Optional[InstallationLite] = None
@@ -6521,7 +7745,7 @@ class ReleaseEvent(GhWebhooksModel):
     ] = None
 
 
-class Repository7(Repository):
+class Repository11(Repository):
     archived: Optional[Literal[True]] = Field(
         False, description="Whether the repository is archived."
     )
@@ -6532,7 +7756,7 @@ class RepositoryArchived(GhWebhooksModel):
         pass
 
     action: Optional[Literal["archived"]] = None
-    repository: Optional[Repository7] = None
+    repository: Optional[Repository11] = None
     sender: Optional[User] = None
     installation: Optional[InstallationLite] = None
     organization: Optional[Organization] = None
@@ -6565,14 +7789,14 @@ class RepositoryEdited(GhWebhooksModel):
         pass
 
     action: Optional[Literal["edited"]] = None
-    changes: Optional[Changes27] = None
+    changes: Optional[Changes29] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
     installation: Optional[InstallationLite] = None
     organization: Optional[Organization] = None
 
 
-class Repository8(Repository):
+class Repository12(Repository):
     private: Optional[Literal[True]] = Field(
         None, description="Whether the repository is private or public."
     )
@@ -6583,13 +7807,13 @@ class RepositoryPrivatized(GhWebhooksModel):
         pass
 
     action: Optional[Literal["privatized"]] = None
-    repository: Optional[Repository8] = None
+    repository: Optional[Repository12] = None
     sender: Optional[User] = None
     installation: Optional[InstallationLite] = None
     organization: Optional[Organization] = None
 
 
-class Repository9(Repository):
+class Repository13(Repository):
     private: Optional[Literal[False]] = Field(
         None, description="Whether the repository is private or public."
     )
@@ -6600,7 +7824,7 @@ class RepositoryPublicized(GhWebhooksModel):
         pass
 
     action: Optional[Literal["publicized"]] = None
-    repository: Optional[Repository9] = None
+    repository: Optional[Repository13] = None
     sender: Optional[User] = None
     installation: Optional[InstallationLite] = None
     organization: Optional[Organization] = None
@@ -6611,7 +7835,7 @@ class RepositoryRenamed(GhWebhooksModel):
         pass
 
     action: Optional[Literal["renamed"]] = None
-    changes: Optional[Changes28] = None
+    changes: Optional[Changes30] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
     installation: Optional[InstallationLite] = None
@@ -6623,14 +7847,14 @@ class RepositoryTransferred(GhWebhooksModel):
         pass
 
     action: Optional[Literal["transferred"]] = None
-    changes: Optional[Changes29] = None
+    changes: Optional[Changes31] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
     installation: Optional[InstallationLite] = None
     organization: Optional[Organization] = None
 
 
-class Repository11(Repository):
+class Repository15(Repository):
     archived: Optional[Literal[False]] = Field(
         False, description="Whether the repository is archived."
     )
@@ -6641,7 +7865,7 @@ class RepositoryUnarchived(GhWebhooksModel):
         pass
 
     action: Optional[Literal["unarchived"]] = None
-    repository: Optional[Repository11] = None
+    repository: Optional[Repository15] = None
     sender: Optional[User] = None
     installation: Optional[InstallationLite] = None
     organization: Optional[Organization] = None
@@ -6687,7 +7911,7 @@ class RepositoryImportEvent(GhWebhooksModel):
     organization: Optional[Organization] = None
 
 
-class Alert6(RepositoryVulnerabilityAlertAlert):
+class Alert9(RepositoryVulnerabilityAlertAlert):
     state: Optional[Literal["open"]] = None
 
 
@@ -6696,13 +7920,13 @@ class RepositoryVulnerabilityAlertCreate(GhWebhooksModel):
         pass
 
     action: Optional[Literal["create"]] = None
-    alert: Optional[Alert6] = None
+    alert: Optional[Alert9] = None
     repository: Optional[Repository] = None
     sender: Optional[GithubOrg] = None
     organization: Optional[Organization] = None
 
 
-class Alert7(RepositoryVulnerabilityAlertAlert):
+class Alert10(RepositoryVulnerabilityAlertAlert):
     dismisser: Optional[User] = None
     dismiss_reason: Optional[str] = None
     dismissed_at: Optional[str] = None
@@ -6714,13 +7938,13 @@ class RepositoryVulnerabilityAlertDismiss(GhWebhooksModel):
         pass
 
     action: Optional[Literal["dismiss"]] = None
-    alert: Optional[Alert7] = None
+    alert: Optional[Alert10] = None
     repository: Optional[Repository] = None
     sender: Optional[GithubOrg] = None
     organization: Optional[Organization] = None
 
 
-class Alert8(Alert6):
+class Alert11(Alert9):
     pass
 
 
@@ -6729,16 +7953,17 @@ class RepositoryVulnerabilityAlertReopen(GhWebhooksModel):
         pass
 
     action: Optional[Literal["reopen"]] = None
-    alert: Optional[Alert8] = None
+    alert: Optional[Alert11] = None
     repository: Optional[Repository] = None
     sender: Optional[GithubOrg] = None
     organization: Optional[Organization] = None
 
 
-class Alert9(RepositoryVulnerabilityAlertAlert):
+class Alert12(RepositoryVulnerabilityAlertAlert):
     state: Optional[Literal["fixed"]] = None
     fixed_at: Optional[datetime] = None
     fix_reason: Optional[str] = None
+    fixed_in: Optional[str] = None
 
 
 class RepositoryVulnerabilityAlertResolve(GhWebhooksModel):
@@ -6746,7 +7971,7 @@ class RepositoryVulnerabilityAlertResolve(GhWebhooksModel):
         pass
 
     action: Optional[Literal["resolve"]] = None
-    alert: Optional[Alert9] = None
+    alert: Optional[Alert12] = None
     repository: Optional[Repository] = None
     sender: Optional[GithubOrg] = None
     organization: Optional[Organization] = None
@@ -6763,14 +7988,18 @@ class RepositoryVulnerabilityAlertEvent(GhWebhooksModel):
     ] = None
 
 
+class Alert13(SecretScanningAlert):
+    resolution: None = None
+    resolved_by: None = None
+    resolved_at: None = None
+
+
 class SecretScanningAlertCreated(GhWebhooksModel):
     class Config:
         pass
 
     action: Optional[Literal["created"]] = None
-    alert: Optional[Alert10] = Field(
-        None, description="The secret scanning alert involved in the event."
-    )
+    alert: Optional[Alert13] = None
     repository: Optional[Repository] = None
     organization: Optional[Organization] = None
     installation: Optional[InstallationLite] = None
@@ -6781,7 +8010,7 @@ class SecretScanningAlertReopened(GhWebhooksModel):
         pass
 
     action: Optional[Literal["reopened"]] = None
-    alert: Optional[Alert11] = Field(
+    alert: Optional[Alert14] = Field(
         None, description="The secret scanning alert involved in the event."
     )
     repository: Optional[Repository] = None
@@ -6790,14 +8019,36 @@ class SecretScanningAlertReopened(GhWebhooksModel):
     sender: Optional[User] = None
 
 
+class Alert15(SecretScanningAlert):
+    resolution: Optional[Resolution] = None
+    resolved_by: Optional[User] = None
+    resolved_at: Optional[datetime] = None
+
+
 class SecretScanningAlertResolved(GhWebhooksModel):
     class Config:
         pass
 
     action: Optional[Literal["resolved"]] = None
-    alert: Optional[Alert12] = Field(
-        None, description="The secret scanning alert involved in the event."
-    )
+    alert: Optional[Alert15] = None
+    repository: Optional[Repository] = None
+    organization: Optional[Organization] = None
+    installation: Optional[InstallationLite] = None
+    sender: Optional[User] = None
+
+
+class Alert16(SecretScanningAlert):
+    resolution: Optional[Literal["revoked"]] = None
+    resolved_by: Optional[User] = None
+    resolved_at: Optional[datetime] = None
+
+
+class SecretScanningAlertRevoked(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["revoked"]] = None
+    alert: Optional[Alert16] = None
     repository: Optional[Repository] = None
     organization: Optional[Organization] = None
     installation: Optional[InstallationLite] = None
@@ -6810,8 +8061,26 @@ class SecretScanningAlertEvent(GhWebhooksModel):
             SecretScanningAlertCreated,
             SecretScanningAlertReopened,
             SecretScanningAlertResolved,
+            SecretScanningAlertRevoked,
         ]
     ] = None
+
+
+class SecretScanningAlertLocationCreated(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["created"]] = None
+    alert: Optional[SecretScanningAlert] = None
+    location: Optional[SecretScanningLocation] = None
+    repository: Optional[Repository] = None
+    sender: Optional[User] = None
+    organization: Optional[Organization] = None
+    installation: Optional[InstallationLite] = None
+
+
+class SecretScanningAlertLocationEvent(GhWebhooksModel):
+    __root__: Optional[SecretScanningAlertLocationCreated] = None
 
 
 class StarCreated(GhWebhooksModel):
@@ -6819,7 +8088,7 @@ class StarCreated(GhWebhooksModel):
         pass
 
     action: Optional[Literal["created"]] = None
-    starred_at: Optional[str] = Field(
+    starred_at: Optional[datetime] = Field(
         None,
         description="The time the star was created. This is a timestamp in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`. Will be `null` for the `deleted` action.",
     )
@@ -6834,7 +8103,7 @@ class StarDeleted(GhWebhooksModel):
         pass
 
     action: Optional[Literal["deleted"]] = None
-    starred_at: Optional[Any] = Field(
+    starred_at: None = Field(
         None,
         description="The time the star was created. This is a timestamp in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`. Will be `null` for the `deleted` action.",
     )
@@ -6855,15 +8124,15 @@ class StatusEvent(GhWebhooksModel):
     id: Optional[int] = Field(None, description="The unique identifier of the status.")
     sha: Optional[str] = Field(None, description="The Commit SHA.")
     name: Optional[str] = None
-    avatar_url: Optional[Optional[str]] = None
-    target_url: Optional[Optional[str]] = Field(
+    avatar_url: Optional[AnyUrl] = None
+    target_url: Optional[str] = Field(
         None, description="The optional link added to the status."
     )
     context: Optional[str] = None
-    description: Optional[Optional[str]] = Field(
+    description: Optional[str] = Field(
         None, description="The optional human-readable description added to the status."
     )
-    state: Optional[State11] = Field(
+    state: Optional[State12] = Field(
         None,
         description="The new state. Can be `pending`, `success`, `failure`, or `error`.",
     )
@@ -6872,8 +8141,8 @@ class StatusEvent(GhWebhooksModel):
         None,
         description="An array of branch objects containing the status' SHA. Each branch contains the given SHA, but the SHA may or may not be the head of the branch. The array includes a maximum of 10 branches.",
     )
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
     installation: Optional[InstallationLite] = None
@@ -6921,7 +8190,7 @@ class TeamEdited(GhWebhooksModel):
         pass
 
     action: Optional[Literal["edited"]] = None
-    changes: Optional[Changes33] = Field(
+    changes: Optional[Changes35] = Field(
         None, description="The changes to the team if the action was `edited`."
     )
     team: Optional[Team] = None
@@ -6985,7 +8254,7 @@ class WorkflowDispatchEvent(GhWebhooksModel):
     class Config:
         pass
 
-    inputs: Optional[Union[Dict[str, Any], Any]] = Field(
+    inputs: Optional[Dict[str, Any]] = Field(
         None,
         description="Inputs to the workflow. Each key represents the name of the input while it's value represents the value of that input.",
     )
@@ -7018,11 +8287,12 @@ class WorkflowJobCompleted(GhWebhooksModel):
     installation: Optional[InstallationLite] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
+    deployment: Optional[Deployment] = None
     workflow_job: Optional[WorkflowJobModel] = None
 
 
 class WorkflowJob1(WorkflowJob):
-    status: Optional[Literal["in_progress"]] = None
+    status: Optional[Status10] = None
 
 
 class WorkflowJobInProgress(GhWebhooksModel):
@@ -7034,7 +8304,12 @@ class WorkflowJobInProgress(GhWebhooksModel):
     installation: Optional[InstallationLite] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
+    deployment: Optional[Deployment] = None
     workflow_job: Optional[WorkflowJob1] = None
+
+
+class WorkflowJob2(WorkflowJob):
+    status: Optional[Status11] = None
 
 
 class WorkflowJobQueued(GhWebhooksModel):
@@ -7046,12 +8321,35 @@ class WorkflowJobQueued(GhWebhooksModel):
     installation: Optional[InstallationLite] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
+    deployment: Optional[Deployment] = None
     workflow_job: Optional[WorkflowJob2] = None
+
+
+class WorkflowJob3(WorkflowJob):
+    status: Optional[Literal["waiting"]] = None
+
+
+class WorkflowJobWaiting(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["waiting"]] = None
+    organization: Optional[Organization] = None
+    installation: Optional[InstallationLite] = None
+    repository: Optional[Repository] = None
+    sender: Optional[User] = None
+    deployment: Optional[Deployment] = None
+    workflow_job: Optional[WorkflowJob3] = None
 
 
 class WorkflowJobEvent(GhWebhooksModel):
     __root__: Optional[
-        Union[WorkflowJobCompleted, WorkflowJobInProgress, WorkflowJobQueued]
+        Union[
+            WorkflowJobCompleted,
+            WorkflowJobInProgress,
+            WorkflowJobQueued,
+            WorkflowJobWaiting,
+        ]
     ] = None
 
 
@@ -7075,6 +8373,19 @@ class WorkflowRunCompleted(GhWebhooksModel):
     installation: Optional[InstallationLite] = None
 
 
+class WorkflowRunInProgress(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["in_progress"]] = None
+    organization: Optional[Organization] = None
+    repository: Optional[Repository] = None
+    sender: Optional[User] = None
+    workflow: Optional[Workflow] = None
+    workflow_run: Optional[WorkflowRun] = None
+    installation: Optional[InstallationLite] = None
+
+
 class WorkflowRunRequested(GhWebhooksModel):
     class Config:
         pass
@@ -7089,7 +8400,9 @@ class WorkflowRunRequested(GhWebhooksModel):
 
 
 class WorkflowRunEvent(GhWebhooksModel):
-    __root__: Optional[Union[WorkflowRunCompleted, WorkflowRunRequested]] = None
+    __root__: Optional[
+        Union[WorkflowRunCompleted, WorkflowRunInProgress, WorkflowRunRequested]
+    ] = None
 
 
 class Issue(GhWebhooksModel):
@@ -7104,38 +8417,45 @@ class Issue(GhWebhooksModel):
     html_url: Optional[AnyUrl] = None
     id: Optional[int] = None
     node_id: Optional[str] = None
-    number: Optional[int] = None
+    number: Optional[int] = Field(
+        None, description="Number uniquely identifying the issue within its repository"
+    )
     title: Optional[str] = Field(None, description="Title of the issue")
     user: Optional[User] = None
     labels: Optional[List[Label]] = None
-    state: Optional[State5] = Field(
+    state: Optional[State6] = Field(
         None, description="State of the issue; either 'open' or 'closed'"
     )
     locked: Optional[bool] = None
-    assignee: Optional[Optional[User]] = None
+    assignee: Optional[User] = None
     assignees: Optional[List[User]] = None
-    milestone: Optional[Optional[Milestone]] = None
+    milestone: Optional[Milestone] = None
     comments: Optional[int] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
-    closed_at: Optional[Optional[str]] = None
+    closed_at: Optional[datetime] = None
     author_association: Optional[AuthorAssociation] = None
     active_lock_reason: Optional[ActiveLockReason] = None
     draft: Optional[bool] = None
-    performed_via_github_app: Optional[Optional[App]] = None
-    pull_request: Optional[PullRequest9] = None
-    body: Optional[Optional[str]] = Field(None, description="Contents of the issue")
+    performed_via_github_app: Optional[App] = None
+    pull_request: Optional[PullRequest11] = None
+    body: Optional[str] = Field(None, description="Contents of the issue")
     reactions: Optional[Reactions] = None
     timeline_url: Optional[AnyUrl] = None
-    state_reason: Optional[Optional[str]] = None
+    state_reason: Optional[str] = Field(
+        None, description="The reason for the current state"
+    )
 
 
-class Head4(Head5):
-    pass
+class Head4(GhWebhooksModel):
+    class Config:
+        pass
 
-
-class Base5(Head5):
-    pass
+    label: Optional[str] = None
+    ref: Optional[str] = None
+    sha: Optional[str] = None
+    user: Optional[User] = None
+    repo: Optional[Repository] = None
 
 
 class PullRequest(GhWebhooksModel):
@@ -7153,43 +8473,43 @@ class PullRequest(GhWebhooksModel):
         None,
         description="Number uniquely identifying the pull request within its repository.",
     )
-    state: Optional[State5] = Field(
+    state: Optional[State6] = Field(
         None, description="State of this Pull Request. Either `open` or `closed`."
     )
     locked: Optional[bool] = None
     title: Optional[str] = Field(None, description="The title of the pull request.")
     user: Optional[User] = None
-    body: Optional[Optional[str]] = None
+    body: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
-    closed_at: Optional[Optional[str]] = None
-    merged_at: Optional[Optional[str]] = None
-    merge_commit_sha: Optional[Optional[str]] = None
-    assignee: Optional[Optional[User]] = None
+    closed_at: Optional[datetime] = None
+    merged_at: Optional[datetime] = None
+    merge_commit_sha: Optional[str] = None
+    assignee: Optional[User] = None
     assignees: Optional[List[User]] = None
     requested_reviewers: Optional[List[Union[User, Team]]] = None
     requested_teams: Optional[List[Team]] = None
     labels: Optional[List[Label]] = None
-    milestone: Optional[Optional[Milestone]] = None
+    milestone: Optional[Milestone] = None
     commits_url: Optional[AnyUrl] = None
     review_comments_url: Optional[AnyUrl] = None
     review_comment_url: Optional[str] = None
     comments_url: Optional[AnyUrl] = None
     statuses_url: Optional[AnyUrl] = None
     head: Optional[Head4] = None
-    base: Optional[Base5] = None
-    links: Optional[Links7] = Field(None, alias="_links")
+    base: Optional[Base6] = None
+    links: Optional[Links5] = Field(None, alias="_links")
     author_association: Optional[AuthorAssociation] = None
-    auto_merge: Optional[Optional[AutoMerge]] = None
+    auto_merge: Optional[AutoMerge] = None
     active_lock_reason: Optional[ActiveLockReason] = None
     draft: Optional[bool] = Field(
         None, description="Indicates whether or not the pull request is a draft."
     )
-    merged: Optional[Optional[bool]] = None
-    mergeable: Optional[Optional[bool]] = None
-    rebaseable: Optional[Optional[bool]] = None
+    merged: Optional[bool] = None
+    mergeable: Optional[bool] = None
+    rebaseable: Optional[bool] = None
     mergeable_state: Optional[str] = None
-    merged_by: Optional[Optional[User]] = None
+    merged_by: Optional[User] = None
     comments: Optional[int] = None
     review_comments: Optional[int] = None
     maintainer_can_modify: Optional[bool] = Field(
@@ -7201,12 +8521,39 @@ class PullRequest(GhWebhooksModel):
     changed_files: Optional[int] = None
 
 
+class DeploymentProtectionRuleRequested(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["requested"]] = None
+    environment: Optional[str] = Field(
+        None,
+        description="The name of the environment that has the deployment protection rule.",
+    )
+    event: Optional[str] = Field(
+        None, description="The event that triggered the deployment protection rule."
+    )
+    deployment_callback_url: Optional[AnyUrl] = Field(
+        None, description="The URL to review the deployment protection rule."
+    )
+    deployment: Optional[Deployment] = None
+    pull_requests: Optional[List[PullRequest]] = None
+    repository: Optional[Repository] = None
+    sender: Optional[User] = None
+    installation: Optional[InstallationLite] = None
+    organization: Optional[Organization] = None
+
+
+class DeploymentProtectionRuleEvent(GhWebhooksModel):
+    __root__: Optional[DeploymentProtectionRuleRequested] = None
+
+
 class IssueModel(Issue):
     class Config:
         pass
 
-    assignee: Optional[Optional[User]] = None
-    state: Optional[State5] = Field(
+    assignee: Optional[User] = None
+    state: Optional[State6] = Field(
         None, description="State of the issue; either 'open' or 'closed'"
     )
     locked: Optional[bool] = None
@@ -7230,8 +8577,8 @@ class IssueCommentCreated(GhWebhooksModel):
 
 
 class Issue1(Issue):
-    assignee: Optional[Optional[User]] = None
-    state: Optional[State5] = Field(
+    assignee: Optional[User] = None
+    state: Optional[State6] = Field(
         None, description="State of the issue; either 'open' or 'closed'"
     )
     locked: Optional[bool] = None
@@ -7263,7 +8610,7 @@ class IssueCommentEdited(GhWebhooksModel):
         pass
 
     action: Optional[Literal["edited"]] = None
-    changes: Optional[Changes5] = Field(None, description="The changes to the comment.")
+    changes: Optional[Changes6] = Field(None, description="The changes to the comment.")
     issue: Optional[Issue2] = Field(
         None,
         description="The [issue](https://docs.github.com/en/rest/reference/issues) the comment belongs to.",
@@ -7289,7 +8636,7 @@ class IssuesAssigned(GhWebhooksModel):
         None, description="The action that was performed."
     )
     issue: Optional[Issue] = None
-    assignee: Optional[Optional[User]] = Field(
+    assignee: Optional[User] = Field(
         None,
         description="The optional user who was assigned or unassigned from the issue.",
     )
@@ -7334,7 +8681,7 @@ class IssuesDeleted(GhWebhooksModel):
 
 
 class Issue4(Issue):
-    milestone: Optional[Any] = None
+    milestone: None = None
 
 
 class IssuesDemilestoned(GhWebhooksModel):
@@ -7357,7 +8704,7 @@ class IssuesEdited(GhWebhooksModel):
     action: Optional[Literal["edited"]] = None
     issue: Optional[Issue] = None
     label: Optional[Label] = None
-    changes: Optional[Changes6] = Field(None, description="The changes to the issue.")
+    changes: Optional[Changes7] = Field(None, description="The changes to the issue.")
     repository: Optional[Repository] = None
     sender: Optional[User] = None
     installation: Optional[InstallationLite] = None
@@ -7413,7 +8760,7 @@ class IssuesMilestoned(GhWebhooksModel):
     organization: Optional[Organization] = None
 
 
-class Changes7(GhWebhooksModel):
+class Changes8(GhWebhooksModel):
     class Config:
         pass
 
@@ -7423,7 +8770,7 @@ class Changes7(GhWebhooksModel):
 
 class Issue7(Issue):
     state: Optional[Literal["open"]] = None
-    closed_at: Optional[Any] = None
+    closed_at: None = None
 
 
 class IssuesOpened(GhWebhooksModel):
@@ -7431,7 +8778,7 @@ class IssuesOpened(GhWebhooksModel):
         pass
 
     action: Optional[Literal["opened"]] = None
-    changes: Optional[Changes7] = None
+    changes: Optional[Changes8] = None
     issue: Optional[Issue7] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
@@ -7467,7 +8814,7 @@ class IssuesReopened(GhWebhooksModel):
     organization: Optional[Organization] = None
 
 
-class Changes8(GhWebhooksModel):
+class Changes9(GhWebhooksModel):
     class Config:
         pass
 
@@ -7480,7 +8827,7 @@ class IssuesTransferred(GhWebhooksModel):
         pass
 
     action: Optional[Literal["transferred"]] = None
-    changes: Optional[Changes8] = None
+    changes: Optional[Changes9] = None
     issue: Optional[Issue] = None
     repository: Optional[Repository] = None
     sender: Optional[User] = None
@@ -7496,7 +8843,7 @@ class IssuesUnassigned(GhWebhooksModel):
         None, description="The action that was performed."
     )
     issue: Optional[Issue] = None
-    assignee: Optional[Optional[User]] = Field(
+    assignee: Optional[User] = Field(
         None,
         description="The optional user who was assigned or unassigned from the issue.",
     )
@@ -7523,7 +8870,7 @@ class IssuesUnlabeled(GhWebhooksModel):
 
 class Issue9(Issue):
     locked: Optional[Literal[False]] = None
-    active_lock_reason: Optional[Any] = None
+    active_lock_reason: None = None
 
 
 class IssuesUnlocked(GhWebhooksModel):
@@ -7637,13 +8984,13 @@ class PullRequestClosed(GhWebhooksModel):
 
 
 class PullRequest2(PullRequest):
-    closed_at: Optional[Any] = None
-    merged_at: Optional[Any] = None
+    closed_at: None = None
+    merged_at: None = None
     draft: Optional[Literal[True]] = Field(
         None, description="Indicates whether or not the pull request is a draft."
     )
     merged: Optional[Literal[False]] = None
-    merged_by: Optional[Any] = None
+    merged_by: None = None
 
 
 class PullRequestConvertedToDraft(GhWebhooksModel):
@@ -7659,15 +9006,62 @@ class PullRequestConvertedToDraft(GhWebhooksModel):
     sender: Optional[User] = None
 
 
+class PullRequest3(PullRequest):
+    milestone: Optional[Milestone] = None
+
+
+class PullRequestDemilestoned(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["demilestoned"]] = None
+    number: Optional[int] = Field(None, description="The pull request number.")
+    pull_request: Optional[PullRequest3] = None
+    milestone: Optional[Milestone] = None
+    repository: Optional[Repository] = None
+    sender: Optional[User] = None
+    installation: Optional[InstallationLite] = None
+    organization: Optional[Organization] = None
+
+
+class PullRequestDequeued(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["dequeued"]] = None
+    number: Optional[int] = Field(None, description="The pull request number.")
+    reason: Optional[str] = Field(
+        None, description="The reason the pull request was removed from a merge queue."
+    )
+    pull_request: Optional[PullRequest] = None
+    repository: Optional[Repository] = None
+    installation: Optional[InstallationLite] = None
+    organization: Optional[Organization] = None
+    sender: Optional[User] = None
+
+
 class PullRequestEdited(GhWebhooksModel):
     class Config:
         pass
 
     action: Optional[Literal["edited"]] = None
     number: Optional[int] = Field(None, description="The pull request number.")
-    changes: Optional[Changes23] = Field(
+    changes: Optional[Changes25] = Field(
         None, description="The changes to the comment if the action was `edited`."
     )
+    pull_request: Optional[PullRequest] = None
+    repository: Optional[Repository] = None
+    installation: Optional[InstallationLite] = None
+    organization: Optional[Organization] = None
+    sender: Optional[User] = None
+
+
+class PullRequestEnqueued(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["enqueued"]] = None
+    number: Optional[int] = Field(None, description="The pull request number.")
     pull_request: Optional[PullRequest] = None
     repository: Optional[Repository] = None
     installation: Optional[InstallationLite] = None
@@ -7702,13 +9096,26 @@ class PullRequestLocked(GhWebhooksModel):
     sender: Optional[User] = None
 
 
-class PullRequest3(PullRequest):
+class PullRequestMilestoned(GhWebhooksModel):
+    class Config:
+        pass
+
+    action: Optional[Literal["milestoned"]] = None
+    number: Optional[int] = Field(None, description="The pull request number.")
+    pull_request: Optional[PullRequest3] = None
+    milestone: Optional[Milestone] = None
+    repository: Optional[Repository] = None
+    sender: Optional[User] = None
+    installation: Optional[InstallationLite] = None
+    organization: Optional[Organization] = None
+
+
+class PullRequest5(PullRequest):
     state: Optional[Literal["open"]] = None
-    closed_at: Optional[Any] = None
-    merged_at: Optional[Any] = None
-    merge_commit_sha: Optional[Any] = None
-    active_lock_reason: Optional[Any] = None
-    merged_by: Optional[Any] = None
+    closed_at: None = None
+    merged_at: None = None
+    active_lock_reason: None = None
+    merged_by: None = None
 
 
 class PullRequestOpened(GhWebhooksModel):
@@ -7717,22 +9124,22 @@ class PullRequestOpened(GhWebhooksModel):
 
     action: Optional[Literal["opened"]] = None
     number: Optional[int] = Field(None, description="The pull request number.")
-    pull_request: Optional[PullRequest3] = None
+    pull_request: Optional[PullRequest5] = None
     repository: Optional[Repository] = None
     installation: Optional[InstallationLite] = None
     organization: Optional[Organization] = None
     sender: Optional[User] = None
 
 
-class PullRequest4(PullRequest):
+class PullRequest6(PullRequest):
     state: Optional[Literal["open"]] = None
-    closed_at: Optional[Any] = None
-    merged_at: Optional[Any] = None
+    closed_at: None = None
+    merged_at: None = None
     draft: Optional[Literal[False]] = Field(
         None, description="Indicates whether or not the pull request is a draft."
     )
     merged: Optional[bool] = None
-    merged_by: Optional[Any] = None
+    merged_by: None = None
 
 
 class PullRequestReadyForReview(GhWebhooksModel):
@@ -7741,19 +9148,19 @@ class PullRequestReadyForReview(GhWebhooksModel):
 
     action: Optional[Literal["ready_for_review"]] = None
     number: Optional[int] = Field(None, description="The pull request number.")
-    pull_request: Optional[PullRequest4] = None
+    pull_request: Optional[PullRequest6] = None
     repository: Optional[Repository] = None
     installation: Optional[InstallationLite] = None
     organization: Optional[Organization] = None
     sender: Optional[User] = None
 
 
-class PullRequest5(PullRequest):
+class PullRequest7(PullRequest):
     state: Optional[Literal["open"]] = None
-    closed_at: Optional[Any] = None
-    merged_at: Optional[Any] = None
+    closed_at: None = None
+    merged_at: None = None
     merged: Optional[bool] = None
-    merged_by: Optional[Any] = None
+    merged_by: None = None
 
 
 class PullRequestReopened(GhWebhooksModel):
@@ -7762,7 +9169,7 @@ class PullRequestReopened(GhWebhooksModel):
 
     action: Optional[Literal["reopened"]] = None
     number: Optional[int] = Field(None, description="The pull request number.")
-    pull_request: Optional[PullRequest5] = None
+    pull_request: Optional[PullRequest7] = None
     repository: Optional[Repository] = None
     installation: Optional[InstallationLite] = None
     organization: Optional[Organization] = None
@@ -7901,9 +9308,13 @@ class PullRequestEvent(GhWebhooksModel):
             PullRequestAutoMergeEnabled,
             PullRequestClosed,
             PullRequestConvertedToDraft,
+            PullRequestDemilestoned,
+            PullRequestDequeued,
             PullRequestEdited,
+            PullRequestEnqueued,
             PullRequestLabeled,
             PullRequestLocked,
+            PullRequestMilestoned,
             PullRequestOpened,
             PullRequestReadyForReview,
             PullRequestReopened,
@@ -7927,8 +9338,10 @@ class Model(GhWebhooksModel):
             CommitCommentEvent,
             CreateEvent,
             DeleteEvent,
+            DependabotAlertEvent,
             DeployKeyEvent,
             DeploymentEvent,
+            DeploymentProtectionRuleEvent,
             DeploymentStatusEvent,
             DiscussionEvent,
             DiscussionCommentEvent,
@@ -7937,12 +9350,14 @@ class Model(GhWebhooksModel):
             GollumEvent,
             InstallationEvent,
             InstallationRepositoriesEvent,
+            InstallationTargetEvent,
             IssueCommentEvent,
             IssuesEvent,
             LabelEvent,
             MarketplacePurchaseEvent,
             MemberEvent,
             MembershipEvent,
+            MergeGroupEvent,
             MetaEvent,
             MilestoneEvent,
             OrgBlockEvent,
@@ -7960,12 +9375,14 @@ class Model(GhWebhooksModel):
             PullRequestReviewCommentEvent,
             PullRequestReviewThreadEvent,
             PushEvent,
+            RegistryPackageEvent,
             ReleaseEvent,
             RepositoryEvent,
             RepositoryDispatchEvent,
             RepositoryImportEvent,
             RepositoryVulnerabilityAlertEvent,
             SecretScanningAlertEvent,
+            SecretScanningAlertLocationEvent,
             SecurityAdvisoryEvent,
             SponsorshipEvent,
             StarEvent,
