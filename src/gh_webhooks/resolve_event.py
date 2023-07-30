@@ -1,4 +1,5 @@
 import inspect
+import json
 import logging
 from typing import Any, Dict, Type, Optional
 
@@ -37,7 +38,7 @@ def resolve_event(event: Dict[str, Any], kind: str):
     cls = _get_cls(kind)
     logger.info(f"Matching event to {cls!r}")
 
-    result = Model.model_validate(event)
+    result = Model.model_validate_json(json.dumps(event), strict=True)
     while hasattr(result, "root") and result.root is not None:
         result = result.root  # type: ignore
     return result
