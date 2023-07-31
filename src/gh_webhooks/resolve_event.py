@@ -38,7 +38,7 @@ def resolve_event(event: Dict[str, Any], kind: str):
     cls = _get_cls(kind)
     logger.info(f"Matching event to {cls!r}")
 
-    result = Model.model_validate_json(json.dumps(event), strict=True)
+    result = Model.model_validate(event)
     while hasattr(result, "root") and result.root is not None:
         result = result.root  # type: ignore
     return result
