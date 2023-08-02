@@ -1,7 +1,7 @@
 import inspect
 import json
 import logging
-from typing import Any, Dict, Type, Optional
+from typing import Any, Dict, Optional, Type
 
 import stringcase
 
