@@ -4,8 +4,8 @@ from gh_webhooks import GhWebhookEventHandler
 from gh_webhooks.resolve_event import resolve_event
 from gh_webhooks.types import (
     BranchProtectionRuleCreated,
-    WorkflowJobQueued,
     PullRequestReviewCommentCreated,
+    WorkflowJobQueued,
 )
 from tests.integration.helpers import get_example_events
 

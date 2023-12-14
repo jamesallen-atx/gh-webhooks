@@ -1,7 +1,6 @@
 import inspect
-import json
 import logging
-from typing import Any, Dict, Type, Optional
+from typing import Any, Dict, Optional, Type
 
 import stringcase
 
@@ -35,6 +34,9 @@ def resolve_event(event: Dict[str, Any], kind: str):
     gh_webhooks.exceptions.NoMatchingModel
         If the event can't be matched to a model
     """
+    if kind == "check_run":
+        logger.info("Matching event to CheckRunEvent")
+
     cls = _get_cls(kind)
     logger.info(f"Matching event to {cls!r}")
 
